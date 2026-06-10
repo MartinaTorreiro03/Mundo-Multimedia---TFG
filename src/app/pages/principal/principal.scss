@@ -1,0 +1,580 @@
+
+
+.portada {
+  height: 100vh;
+  background-color: black;
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
+  overflow: clip;
+
+  h1 {
+    font-size: clamp(4.5rem, 2.5rem + 8vw, 420px);
+    color: white;
+    z-index: 2;
+    text-align: right;
+    padding: 0 5vw;
+    line-height: 1.05;
+
+    max-width: 90vw;
+    min-width: 0;
+    overflow-wrap: anywhere;
+
+    transition: font-size 200ms ease, padding 200ms ease;
+  }
+
+  img {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+
+    width: 75%;
+    height: auto;
+    object-fit: contain;
+    z-index: 1;
+
+    transition: width 200ms ease, transform 200ms ease;
+  }
+}
+
+#seccion1 {
+  position: relative;
+  width: min(1300px, 95%);
+  margin: 0 auto;
+  padding: 4rem clamp(10px, 2vw, 30px);
+  box-sizing: border-box;
+  grid-auto-rows: max-content;
+
+  display: grid;
+  grid-template-columns: minmax(300px, 32vw) 1fr;
+
+  grid-template-areas:
+    "titulo texto"
+    "imagen texto"
+    "boton  texto";
+
+  column-gap: 90px;
+  row-gap: clamp(1rem, 2vw, 2.5rem);
+
+  align-items: start;
+
+  h2 {
+    grid-area: titulo;
+    font-size: 90px;
+    color: #df0097;
+    text-align: left;
+    line-height: 100px;
+    margin: 0;
+    padding: 20px 0 0 0;
+  }
+
+  .parrafo-seccion1 {
+    grid-area: texto;
+
+    p {
+      margin: 0;
+      font-size: 1.2rem;
+      line-height: 1.6;
+      max-width: 800px;
+      text-align: justify;
+    }
+  }
+
+  img {
+    grid-area: imagen;
+    transform: translateY(clamp(-20px, -2vw, -40px));
+    max-width: 600px;
+    height: auto;
+    justify-self: center;
+  }
+
+  .boton-juego-wrap {
+    grid-area: boton;
+    justify-self: center;
+    align-self: start;
+    margin-top: clamp(-20px, -2vw, -40px);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .btn-juego {
+    grid-area: boton;
+    justify-self: center;
+    margin-top: clamp(-20px, -2vw, -40px);
+    align-self: start;
+    padding: 20px 30px;
+    font-size: 20px;
+    cursor: pointer;
+    background: var(--btn-bg, #df0097);
+    border: 2px solid var(--btn-border, #ff98de);
+    border-right-color: var(--btn-border-lat, #900c66);
+    border-bottom-color: var(--btn-border-lat, #900c66);
+    box-shadow: 2px 2px 0px #000;
+    transition: all 0.3s ease;
+  }
+  .btn-juego.hover-global {
+    color: white;
+    background: #808080;
+    border: #4d4d4d;
+    border-right-color: #a5a5a5;
+    border-bottom-color: #a5a5a5;
+  }
+
+  .juego-instructions-panel {
+    position: fixed;
+    top: 50%;
+    left: calc(50% + min(42vw, 380px));
+    transform: translateY(-50%);
+    width: clamp(240px, 22vw, 340px);
+    padding: 14px 16px;
+    background: #fff2fb;
+    border: 2px solid #df0097;
+    box-shadow: 4px 4px 0 #000;
+    color: #2b1a2a;
+    z-index: 10002;
+    pointer-events: none;
+
+    h3 {
+      margin: 0 0 10px;
+      font-size: clamp(1rem, 0.95rem + 0.25vw, 1.2rem);
+      line-height: 1.2;
+      color: #8f005f;
+    }
+
+    p {
+      margin: 0 0 8px;
+      line-height: 1.35;
+      font-size: clamp(0.9rem, 0.85rem + 0.2vw, 1rem);
+    }
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+
+    &.juego-instructions-panel--voice {
+      background: #eefdf9;
+      border-color: #00b6a7;
+
+      h3 {
+        color: #0c6a62;
+      }
+    }
+  }
+}
+
+#seccion2 {
+  width: min(1300px, 95%);
+  margin: 0 auto;
+  padding: 30px 0;
+  box-sizing: border-box;
+
+  h2 {
+    transform: translateY(clamp(-40px, -4vw, -80px));
+    margin: 10 0 10px;
+    color: #00b6a7;
+    text-align: center;
+    font-size: 90px;
+  }
+
+  .bloque {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: start;
+    margin: 24px 0;
+
+    .texto {
+      .subtitulo-1, .subtitulo-2, .subtitulo-3 {
+        margin-bottom: 20px;
+        color: #176a62;
+        font-size: 2rem;
+      }
+
+      .subtitulo-1.hover-global, .subtitulo-2.hover-global, .subtitulo-3.hover-global {
+        color: #bdbdbd;
+      }
+
+      p {
+        margin: 0;
+        font-size: 1.2rem;
+        line-height: 1.5;
+        text-align: justify;
+      }
+    }
+
+    .slot {
+      min-height: 220px;
+      display: flex;
+
+      justify-content: flex-start;
+      align-items: flex-start;
+
+      padding-top: clamp(3.8rem, 4.4vw, 4.6rem);
+      padding-inline: 0;
+      min-width: 0;
+    }
+
+    &.derecha {
+      .texto {
+        grid-column: 2;
+
+        h3 { text-align: right; }
+      }
+
+      .slot {
+        grid-column: 1;
+        justify-content: flex-start;
+      }
+    }
+
+    &.ultimo {
+      grid-template-columns: 1.4fr 0.6fr;
+      align-items: center;
+
+      .slot.slot-col {
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0.6rem;
+      }
+
+      .slot {
+        display: flex;
+        min-height: unset;
+        justify-content: flex-end;
+        align-items: flex-end;
+      }
+    }
+  }
+
+.slot img.hover-global {
+  background: black;
+}
+
+  .carrusel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+    background: var(--carrusel-bg, #23a094);
+    border: 2px solid var(--carrusel-border, #ffffff);
+    border-right-color: var(--carrusel-border-lat, #176a62);
+    border-bottom-color: var(--carrusel-border-lat, #176a62);
+    padding: 5px;
+    box-shadow: inset -1px -1px var(--carrusel-border-lat, #176a62), inset 1px 1px #ffffff;
+    cursor: pointer;
+
+    width: min(500px, calc(100% - clamp(100px, 16vw, 180px)));
+    max-width: 100%;
+    box-sizing: border-box;
+
+    &.hover-activo {
+      background: #c0c0c0;
+      border-color: #000000;
+    }
+
+    .carrusel-imagen {
+      width: 100%;
+      height: 380px;
+      box-sizing: border-box;
+
+      overflow: hidden;
+      position: relative;
+      background: white;
+
+      &.hover-activo {
+        border-color: #c0c0c0;
+      }
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+        user-select: none;
+      }
+    }
+
+    .flecha {
+      position: static;
+      transform: none;
+      font-size: 16px;
+      color: black;
+      cursor: pointer;
+      padding: 4px 8px;
+      background: var(--carrusel-elemento-bg, #32e3d2);
+      border: 2px solid #ffffff;
+      border-right-color: var(--carrusel-elemento-border-lat, #176a62);
+      border-bottom-color: var(--carrusel-elemento-border-lat, #176a62);
+
+      &:active {
+        border-top-color: #176a62;
+        border-left-color: #176a62;
+        border-bottom-color: #ffffff;
+        border-right-color: #ffffff;
+      }
+
+      &.hover-activo {
+        background: #d3d3d3;
+        border-color: black;
+      }
+    }
+
+    .carrusel-titulo {
+      margin-top: 6px;
+      padding: 6px 8px;
+      background: var(--carrusel-elemento-bg, #32e3d2);
+      border: 2px solid #ffffff;
+      border-right-color: var(--carrusel-elemento-border-lat, #176a62);
+      border-bottom-color: var(--carrusel-elemento-border-lat, #176a62);
+      font-weight: 700;
+      color: black;
+
+      > button.speak-btn {
+        min-height: 0;
+        min-width: 0;
+        height: 24px;
+        padding: 3px 5px;
+        font-size: 12px;
+        line-height: 1;
+        margin-left: 0;
+      }
+
+      > button.speak-btn .speak-btn-label {
+        display: none;
+      }
+
+      &.hover-activo {
+        background: #c0c0c0;
+        border-color: black;
+        color: white;
+      }
+    }
+  }
+
+  .siguiente-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  .siguiente {
+    padding: 12px 25px;
+    font-size: 24px;
+    cursor: pointer;
+    background: var(--btn-bg, #32e3d2);
+    border: 2px solid var(--btn-border, #80fff2);
+    border-right-color: var(--btn-border-lat, #176a62);
+    border-bottom-color: vaar(--btn-border-lat, #176a62);
+    box-shadow: 2px 2px 0px #000;
+
+    &:active {
+      border-top-color: #176a62;
+      border-left-color: #176a62;
+      border-bottom-color: #ffffff;
+      border-right-color: #ffffff;
+      box-shadow: none;
+    }
+
+    &.hover-global {
+      color: white;
+      background: #808080;
+      border: #4d4d4d;
+      border-right-color: #a5a5a5;
+      border-bottom-color: #a5a5a5;
+    }
+  }
+}
+
+@media (max-width: 1100px) {
+  .portada {
+    h1 {
+      font-size: clamp(4.2rem, 2.2rem + 8vw, 8rem);
+    }
+    img {
+      width: 100%;
+    }
+  }
+
+  #seccion1 {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "titulo"
+      "imagen"
+      "texto"
+      "boton";
+
+    column-gap: 0;
+    row-gap: clamp(1rem, 3vw, 2rem);
+
+    width: min(900px, 92%);
+    padding: clamp(2rem, 5vw, 4rem) clamp(12px, 6vw, 28px);
+
+    h2 {
+      font-size: clamp(3rem, 7vw, 6rem);
+      line-height: 1.05;
+      text-align: left;
+      padding: 0;
+      margin: 0;
+      text-align: center;
+    }
+
+    img {
+      transform: none;
+      width: min(600px, 100%);
+      max-width: 100%;
+      justify-self: center;
+    }
+
+    .parrafo-seccion1 p {
+      max-width: 100%;
+      font-size: clamp(0.9rem, 0.7rem + 0.8vw, 1.2rem);
+      line-height: 1.6;
+      text-align: justify;
+      margin-right: clamp(20px, 5vw, 100px);
+      margin-left: clamp(20px, 5vw, 100px);
+    }
+
+    .btn-juego {
+      justify-self: center;
+      margin-top: 0;
+      width: fit-content;
+    }
+
+    .juego-instructions-panel {
+      left: auto;
+      right: clamp(8px, 3vw, 18px);
+      top: auto;
+      bottom: clamp(10px, 2vw, 20px);
+      transform: none;
+      width: min(330px, calc(100vw - 24px));
+    }
+  }
+
+  #seccion2 {
+    width: min(900px, 92%);
+    padding: clamp(2rem, 5vw, 4rem) clamp(12px, 6vw, 28px);
+
+    h2 {
+      transform: none;
+      font-size: clamp(3rem, 7vw, 6rem);
+      line-height: 1.05;
+      margin: 0 0 clamp(1rem, 3vw, 2rem);
+      text-align: center;
+    }
+
+    .bloque {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .bloque .texto {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .bloque .texto h3 { order: 1; }
+    .bloque .slot      { order: 2; width: 100%; }
+    .bloque .texto p   { order: 3; }
+
+    .bloque .texto h3 {
+      font-size: clamp(1.6rem, 2.2vw + 1rem, 2.2rem);
+      text-align: left;
+      line-height: 1;
+      margin-right: clamp(20px, 5vw, 100px);
+      margin-left: clamp(20px, 5vw, 100px);
+    }
+
+    .bloque .texto p {
+      font-size: clamp(0.9rem, 0.7rem + 0.8vw, 1.2rem);
+      line-height: 1.6;
+      text-align: justify;
+      margin-right: clamp(20px, 5vw, 100px);
+      margin-left: clamp(20px, 5vw, 100px);
+    }
+
+    .slot {
+      padding-top: 0;
+      min-height: unset;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .carrusel {
+      width: min(500px, calc(100% - clamp(100px, 18vw, 200px)));
+      margin-inline: auto;
+      display: block;
+      float: none;
+    }
+
+    .bloque.derecha .texto h3 { text-align: left; }
+
+    .siguiente {
+      display: block;
+      width: fit-content;
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .portada {
+    height: 60vh;
+    h1 {
+      font-size: clamp(3.5rem, 1.8rem + 9vw, 6.5rem);
+    }
+    img {
+      width: 100%;
+    }
+  }
+
+  #seccion1 {
+    width: 95%;
+    padding: 2.2rem clamp(12px, 4vw, 22px);
+
+    .parrafo-seccion1 p {
+      font-size: clamp(0.9rem, 0.7rem + 0.8vw, 1.2rem);
+      margin-right: clamp(20px, 5vw, 100px);
+      margin-left: clamp(20px, 5vw, 100px);
+    }
+
+    .btn-juego {
+      justify-self: center;
+      width: fit-content;
+    }
+  }
+
+  #seccion2 {
+    .carrusel {
+      width: min(460px, calc(100% - clamp(64px, 18vw, 120px)));
+      max-width: 100%;
+
+      .carrusel-imagen {
+        aspect-ratio: 1 / 1;
+        height: auto;
+      }
+    }
+
+    .bloque .texto p {
+      font-size: clamp(0.9rem, 0.7rem + 0.8vw, 1.2rem);
+      margin-right: clamp(20px, 5vw, 100px);
+      margin-left: clamp(20px, 5vw, 100px);
+    }
+  }
+}
+
+/* Escritorio: mismo alto (380px), solo más ancho */
+@media (min-width: 901px) {
+  #seccion2 .carrusel {
+    width: 100%;
+    max-width: 100%;
+
+    .carrusel-imagen {
+      height: 380px;
+    }
+  }
+}

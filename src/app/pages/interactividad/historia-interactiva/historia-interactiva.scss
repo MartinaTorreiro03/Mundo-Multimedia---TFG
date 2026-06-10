@@ -1,0 +1,396 @@
+
+
+$win-bg: #efb6b6;
+$win-border-light: #ffffff;
+$win-border-dark: #860000;
+$win-border-black: #000000;
+$win-accent-red: #860000;
+$win-accent-bright-red: #d00000;
+$win-terminal-green: #00ff00;
+
+.main-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px clamp(16px, 6vw, 40px);
+  min-height: auto;
+
+  .contenido-modal-pong {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #000;
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+
+    canvas {
+      display: block;
+      background: #000;
+      border: 4px inset #5a0000;
+      width: 100%;
+      max-width: 780px;
+      max-width: 100%;
+      height: auto;
+      box-sizing: border-box;
+      cursor: none;
+      touch-action: none;
+    }
+  }
+
+  .contenedor {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    width: 100%;
+    max-width: 1100px;
+
+    @media (max-width: 600px) {
+      grid-template-columns: 1fr;
+      padding-inline: clamp(16px, 6vw, 32px);
+    }
+
+    .tarjeta {
+      background: $win-bg;
+      padding: 16px;
+      text-align: center;
+      color: $win-border-black;
+      transition: all 0.2s ease;
+
+      border: 2px solid;
+      border-color: $win-border-light $win-border-dark $win-border-dark $win-border-light;
+      box-shadow: inset -1px -1px 0 $win-border-black, inset 1px 1px 0 $win-border-light;
+
+      cursor: pointer;
+
+      &:hover,
+      &:focus-visible,
+      &.is-active {
+        background: #f3c9c9;
+      }
+
+      &:focus-visible {
+        outline: 2px dashed $win-accent-red;
+        outline-offset: 3px;
+      }
+
+      &.hover-global {
+        background: #3a3a3a;
+        border-color: #bdbdbd #2d2d2d #2d2d2d #bdbdbd;
+        box-shadow: inset -1px -1px 0 #111, inset 1px 1px 0 #5a5a5a;
+        transition: background 0.3s ease;
+
+        .titulo { color: #d0d0d0; }
+        .texto {
+          background: #1b1b1b;
+          color: #e6e6e6;
+          border-color: #5b5b5b;
+        }
+        .icono {
+          transform: scale(1.05);
+          border-color: #4a4a4a;
+        }
+        .preview-video {
+          border-color: #4a4a4a;
+        }
+        .procesando::after {
+          color: #cfcfcf;
+          background: #131313;
+          border-color: #5a5a5a;
+        }
+      }
+
+      .icono {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        border: 2px solid $win-border-black;
+        margin-bottom: 12px;
+        transition: transform 0.3s ease;
+      }
+
+      .titulo {
+        font-size: 1rem;
+        font-weight: bold;
+        color: $win-accent-red;
+        margin-bottom: 6px;
+      }
+
+      .hi-titulo-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        flex-wrap: wrap;
+        margin-bottom: 6px;
+
+        > .titulo {
+          margin-bottom: 0;
+          flex: 1;
+          min-width: 0;
+        }
+
+        > span:empty {
+          display: none;
+        }
+
+        > span > button.speak-btn {
+          min-height: 0;
+          min-width: 0;
+          padding: 2px 5px;
+          font-size: 12px;
+          margin-left: 0;
+          line-height: 1;
+
+          .speak-btn-label {
+            display: none;
+          }
+        }
+      }
+
+      .texto > button.speak-btn {
+        min-height: 0;
+        min-width: 0;
+        padding: 2px 5px;
+        font-size: 12px;
+        margin-left: 4px;
+        vertical-align: middle;
+        line-height: 1;
+
+        .speak-btn-label {
+          display: none;
+        }
+      }
+
+      .texto {
+        font-size: 0.85rem;
+        background: $win-border-light;
+        border: 2px inset $win-border-dark;
+        padding: 8px;
+        margin: 8px 0;
+        min-height: 60px;
+        max-height: 220px;
+        overflow-y: auto;
+        text-align: justify;
+        line-height: 1.45;
+      }
+
+      .procesando {
+        margin-top: 10px;
+        &::after {
+          content: "C:\\>RUNNING █";
+          display: inline-block;
+          font-size: 0.85rem;
+          color: $win-terminal-green;
+          background: $win-border-black;
+          padding: 4px 8px;
+          border: 2px inset $win-border-dark;
+          animation: parpadeo 0.8s infinite steps(1);
+        }
+      }
+
+      .preview-video {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        border: 2px solid $win-border-black;
+        margin-top: 10px;
+      }
+    }
+  }
+
+  .boton-pong-row {
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+
+    .boton-pong-inner {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .boton-pong-inner > span:empty {
+      display: none;
+    }
+
+    .boton-pong-inner > span > button.speak-btn {
+      min-height: 0;
+      min-width: 0;
+      padding: 3px 6px;
+      font-size: 14px;
+      margin-left: 0;
+      line-height: 1;
+
+      .speak-btn-label {
+        display: none;
+      }
+    }
+  }
+
+  .boton-pong {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    font-size: 18px;
+    cursor: pointer;
+    background: $win-accent-bright-red;
+    color: white;
+    border: 2px solid $win-border-light;
+    border-right-color: $win-accent-red;
+    border-bottom-color: $win-accent-red;
+    box-shadow: 2px 2px 0px $win-border-black;
+
+    &:active {
+      transform: translate(2px, 2px);
+      box-shadow: none;
+      border-color: $win-accent-red $win-border-light $win-border-light $win-accent-red;
+    }
+
+    &.hover-activo {
+      background: #686868;
+      color: #f2f2f2;
+      border-color: #d2d2d2 #272727 #272727 #d2d2d2;
+    }
+  }
+
+  .overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 999;
+  }
+
+  .modal-reproduccion {
+    position: fixed;
+    background: $win-accent-bright-red;
+    width: 800px;
+    border: 4px solid $win-accent-red;
+    box-shadow: inset -2px -2px $win-border-light, inset 2px 2px #5a0000;
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+
+    .barra-titulo {
+      background: $win-accent-red;
+      color: white;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 8px;
+      cursor: move;
+      user-select: none;
+
+      .titulo-ventana {
+        font-size: 14px;
+        font-weight: bold;
+      }
+
+      .btn-cerrar {
+        background: $win-accent-bright-red;
+        border: 2px solid $win-border-light;
+        border-top-color: $win-accent-red;
+        border-left-color: $win-accent-red;
+        width: 22px;
+        height: 22px;
+        color: white;
+        line-height: 1;
+        cursor: pointer;
+        font-weight: bold;
+
+        &:active {
+          border-color: $win-border-light $win-accent-red $win-accent-red $win-border-light;
+        }
+      }
+    }
+
+    .contenido-modal {
+      background: $win-border-black;
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      canvas {
+        background: $win-border-black;
+        border: 4px inset $win-accent-red;
+        display: block;
+        max-width: 100%;
+      }
+    }
+  }
+}
+
+:host-context(.font-dyslexic) .main-wrapper .contenedor .tarjeta .titulo {
+  font-size: 1.2rem !important;
+  line-height: 1.1;
+}
+
+:host-context(.tema-daltonismo1) .main-wrapper {
+  .contenedor .tarjeta {
+    background: #ffb000;
+    border-color: #ffffff #906200 #906200 #ffffff;
+    color: #000;
+
+    &:hover { background: #ffd27a; }
+
+    .titulo { color: #6e4a00; }
+    .texto {
+      background: #ffe0a1;
+      color: #000;
+      border-color: #906200;
+    }
+    .icono, .preview-video { border-color: #906200; }
+    .procesando::after {
+      color: #000;
+      background: #ffd27a;
+      border-color: #906200;
+    }
+  }
+
+  .boton-pong {
+    background: #fe6100;
+    color: #fff;
+    border-color: #ffffff #906200 #906200 #ffffff;
+  }
+}
+
+:host-context(.tema-daltonismo2) .main-wrapper {
+  .contenedor .tarjeta {
+    background: #e1e1e1;
+    border-color: #ffffff #404040 #404040 #ffffff;
+    color: #000;
+
+    &:hover { background: #d2d2d2; }
+
+    .titulo { color: #404040; }
+    .texto {
+      background: #f1f1f1;
+      color: #000;
+      border-color: #7d7d7d;
+    }
+    .icono, .preview-video { border-color: #404040; }
+    .procesando::after {
+      color: #000;
+      background: #d2d2d2;
+      border-color: #7d7d7d;
+    }
+  }
+
+  .boton-pong {
+    background: #818181;
+    color: #fff;
+    border-color: #ffffff #404040 #404040 #ffffff;
+  }
+}
+
+@keyframes parpadeo {
+  50% { opacity: 0; }
+}

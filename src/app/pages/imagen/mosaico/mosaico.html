@@ -1,0 +1,49 @@
+<div class="mosaico-container" [ngStyle]="mosaicoBaseVars()">
+  @for (foto of fotos; track $index) {
+    <button
+      type="button"
+      class="item-mosaico"
+      [class.hover-global]="ui.isHovering()"
+      [attr.aria-label]="foto.dispositivo"
+      (click)="abrir(foto)">
+      <span class="item-mosaico-foto">
+        <img
+          [src]="ui.isHovering() ? foto.urlImagenHover : foto.urlImagen"
+          [alt]="foto.alt"
+          [class]="foto.tipo">
+        @if (voiceNav.enabled()) {
+          <span class="voz-pista voz-pista--mosaico" aria-hidden="true">{{ pistaVoz(foto.clave) }}</span>
+        }
+      </span>
+    </button>
+  }
+</div>
+
+@if (isPopupOpen && fotoSeleccionada) {
+  <app-popup 
+    [title]="fotoSeleccionada.dispositivo" 
+    [theme]="imagenTheme()" 
+    (closed)="cerrar()">
+    
+    <div class="popup-grid-layout" [ngStyle]="popupVars()">
+      <div class="area-foto-grande">
+        <img 
+          [src]="ui.isHovering() ? fotoSeleccionada.urlImagenHover : fotoSeleccionada.urlImagen" 
+          [class]="fotoSeleccionada.tipo" [alt]="fotoSeleccionada.dispositivo">
+      </div>
+      
+      <div class="area-info">
+        <div class="area-nombre-dispositivo">
+          <h3 [appSpeakable]="fotoSeleccionada.dispositivo">{{ fotoSeleccionada.dispositivo }}</h3>
+        </div>
+        <div class="area-img-dispositivo">
+          <img [src]="fotoSeleccionada.dispositivoImg" alt="Miniatura">
+        </div>
+      </div>
+      
+      <div class="area-descripcion-larga">
+        <p [innerHTML]="texto(fotoSeleccionada.clave)" appSpeakable></p>
+      </div>
+    </div>
+  </app-popup>
+}

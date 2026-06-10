@@ -1,0 +1,257 @@
+.carrusel-audio-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.carrusel-ver-voz {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 8px;
+  padding: 0;
+}
+
+.carrusel {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border: 2px solid #000;
+  box-shadow: inset -2px -2px #808080, inset 2px 2px #fff;
+
+  &.hover-global {
+    border-color: #444;
+    box-shadow: inset -2px -2px #333, inset 2px 2px #666;
+  }
+
+  @media (max-width: 820px) {
+    width: min(520px, calc(100vw - clamp(56px, 12vw, 96px)));
+    max-width: 100%;
+    margin-right: auto;
+    margin-left: auto;
+  }
+}
+
+.carrusel-titulo {
+  width: 100%;
+  background: var(--bloc-bg, rgba(0, 0, 128, 0.88));
+  border-bottom: 2px solid #000;
+  padding: 6px 12px;
+  box-sizing: border-box;
+
+  h3 {
+    margin: 0;
+    color: #fff;
+    font-size: 1rem;
+    text-align: center;
+    letter-spacing: 1px;
+
+    > button.speak-btn {
+      min-height: 0;
+      min-width: 0;
+      height: 24px;
+      padding: 3px 5px;
+      font-size: 12px;
+      line-height: 1;
+      margin-left: 0;
+    }
+
+    > button.speak-btn .speak-btn-label {
+      display: none;
+    }
+  }
+
+  &.hover-global {
+    background: #1a1a1a;
+    border-bottom-color: #444;
+
+    h3 {
+      color: #aaa;
+    }
+  }
+}
+
+.carrusel-puntos-voz {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0 0;
+  padding: 0;
+  width: 100%;
+}
+
+.voz-pista-sep {
+  color: #555;
+  font-size: 12px;
+  user-select: none;
+}
+
+.carrusel-track {
+  position: relative;
+  width: 700px;
+  height: 400px;
+  overflow: hidden;
+  z-index: 1;
+
+  @media (max-width: 820px) {
+    width: 100%;
+    height: clamp(320px, 82vw, 540px);
+  }
+}
+
+.slide {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+  visibility: hidden;
+  height: 0;
+  pointer-events: none;
+
+  &.activo {
+    visibility: visible;
+    height: 400px;
+    animation: win95-enter 0.5s steps(8) forwards;
+    z-index: 2;
+    pointer-events: all;
+
+    @media (max-width: 820px) {
+      height: clamp(320px, 82vw, 540px);
+    }
+  }
+
+  &.saliendo {
+    visibility: visible;
+    height: 400px;
+    animation: win95-exit 0.5s steps(8) forwards;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1;
+    pointer-events: none;
+
+    @media (max-width: 820px) {
+      height: clamp(320px, 82vw, 540px);
+    }
+  }
+
+  img {
+    width: 100%;
+    height: 400px;
+    object-fit: contain;
+    display: block;
+    pointer-events: none;
+
+    @media (max-width: 820px) {
+      height: clamp(320px, 82vw, 540px);
+    }
+  }
+
+  .slide-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--bloc-bg, rgba(0, 0, 128, 0.88));
+    border-top: 2px solid #fff;
+    padding: 10px 12px;
+    transform: translateY(100%);
+    transition: transform 0.2s steps(4);
+
+    p {
+      margin: 0;
+      color: #fff;
+      font-size: 13px;
+      line-height: 1.5;
+
+      > button.speak-btn {
+        min-height: 0;
+        min-width: 0;
+        height: 24px;
+        padding: 3px 5px;
+        font-size: 12px;
+        line-height: 1;
+        margin-left: 4px;
+        vertical-align: middle;
+      }
+
+      > button.speak-btn .speak-btn-label {
+        display: none;
+      }
+    }
+  }
+
+  &:hover .slide-info,
+  &.hover-slide .slide-info,
+  &.mostrar-info .slide-info {
+    transform: translateY(0);
+  }
+}
+
+@keyframes win95-enter {
+  0%   { clip-path: inset(0 0 0 100%); }
+  100% { clip-path: inset(0 0 0 0%); }
+}
+
+@keyframes win95-exit {
+  0%   { clip-path: inset(0 0% 0 0); }
+  100% { clip-path: inset(0 100% 0 0); }
+}
+
+.puntos {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  padding: 8px 0;
+  background: #c0c0c0;
+  border-top: 2px solid #808080;
+  pointer-events: all;
+  z-index: 10;
+
+  &.hover-global {
+    background: #1a1a1a;
+    border-top-color: #444;
+
+    .punto {
+      background: #3a3a3a;
+      border-color: #666;
+      box-shadow: inset -1px -1px #222, inset 1px 1px #555;
+
+      &.activo {
+        background: #888;
+        box-shadow: inset 1px 1px #555, inset -1px -1px #222;
+      }
+    }
+  }
+}
+
+.punto {
+  width: 12px;
+  height: 12px;
+  border: 2px solid #000;
+  box-shadow: inset -1px -1px #fff, inset 1px 1px #808080;
+  background: #c0c0c0;
+  cursor: none;
+  pointer-events: all;
+  position: relative;
+  z-index: 10;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  appearance: none;
+  -webkit-appearance: none;
+
+  &:hover {
+    cursor: pointer;
+    opacity: 0.8;
+  }
+
+  &.activo {
+    background: var(--bloc-bg, rgba(0, 0, 128, 0.88));
+    box-shadow: inset 1px 1px #fff, inset -1px -1px #808080;
+  }
+}

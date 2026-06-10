@@ -1,0 +1,403 @@
+<div
+  class="win95-container"
+  tabindex="0"
+  data-mm-role="root"
+  aria-label="Mesa de mezclas. Pulsa Enter para entrar y espacio para salir."
+  [class.hover-global]="ui.isHovering()">
+  <div class="win95-titlebar mm-titlebar-row" [class.hover-global]="ui.isHovering()">
+    <div class="titlebar-left">
+      <span class="icon" aria-hidden="true"></span>
+      <span class="title">NEURAL_MIXER.EXE</span>
+    </div>
+    <div class="titlebar-buttons" aria-hidden="true">
+      <button type="button" class="titlebar-btn" tabindex="-1">_</button>
+      <button type="button" class="titlebar-btn" tabindex="-1">□</button>
+      <button type="button" class="titlebar-btn" tabindex="-1">×</button>
+    </div>
+  </div>
+
+  @if (keyboardNav.enabled()) {
+    <aside class="teclado-pista-mesa" aria-live="polite">
+      <strong>Modo teclado:</strong> selecciona la mesa como un único bloque.
+      Pulsa <strong>Enter</strong> para entrar en sus controles internos y pulsa
+      <strong>Espacio</strong> para salir y volver al bloque.
+    </aside>
+  }
+
+  <div class="mm-voice-shell">
+    @if (voiceNav.enabled()) {
+      <aside class="voz-pistas-mesa voz-pistas-mesa--izq" aria-hidden="true">
+        <p class="voz-pistas-mesa-titulo">Sliders</p>
+        <span class="voz-pista voz-pista--mesa-hint">tono 1 · 2 · 3</span>
+        <span class="voz-pista voz-pista--mesa-hint">volumen 1 · 2 · 3</span>
+        <span class="voz-pista voz-pista--mesa-hint">volumen final</span>
+        <span class="voz-pista voz-pista--mesa-hint">bass 1 · mid 2 · treble 3</span>
+      </aside>
+    }
+
+  <div class="win95-content">
+    <div class="top-section" [class.hover-global]="ui.isHovering()">
+      <div class="mm-section-head-wrap">
+        <div class="section-header" [class.hover-global]="ui.isHovering()">DECKS — Reproductores</div>
+        <span [appSpeakable]="'Sección decks, reproductores.'"></span>
+      </div>
+      <div class="decks-container">
+        @for (track of tracks(); track track.id) {
+          <div class="deck-module">
+            <div class="deck-top">
+              <div class="deck-screen inset" [class.playing]="track.playing">
+              </div>
+              <div class="deck-transport">
+                <div class="mm-speak-cell deck-play-cell">
+                  <button class="play-button raise"
+                    type="button"
+                    data-mm-role="deck-play"
+                    [attr.data-mm-deck]="$index"
+                    [attr.aria-label]="'Reproducir deck ' + ($index + 1)"
+                    [class.hover-global]="ui.isHovering()"
+                    (click)="toggleTrack(track.id)"
+                    [class.active]="track.playing">
+                    <span class="btn-label">{{ track.playing ? '⏸ STOP' : '▶ PLAY' }}</span>
+                    @if (voiceNav.enabled()) {
+                      <span class="voz-pista voz-pista--dentro-boton" aria-hidden="true">{{ pistaPlay($index, track.playing) }}</span>
+                    }
+                  </button>
+                </div>
+                <div class="mini-jog inset" [class.playing]="track.playing" aria-hidden="true"></div>
+              </div>
+            </div>
+            <div class="deck-controls">
+              <div class="mm-speak-row deck-tune-row" [class.mm-slider-voz-activo]="isTuneSliderVozActivo($index)">
+                <label class="deck-label">
+                  <span>TUNE</span>
+                  @if (voiceNav.enabled()) {
+                    <span class="voz-pista voz-pista--debajo-slider" aria-hidden="true">{{ pistaTune($index) }}</span>
+                  }
+                  <input type="range" class="deck-slider" min="55" max="880" step="1"
+                    data-mm-role="deck-tune"
+                    [attr.data-mm-deck]="$index"
+                    [attr.aria-label]="'Tono deck ' + ($index + 1)"
+                    [value]="track.freq"
+                    (input)="setTrackFreq(track.id, +$any($event.target).value)">
+                </label>
+              </div>
+              <div class="wave-row">
+                <div class="mm-speak-cell wave-cell">
+                  <button class="wave-btn raise"
+                    type="button"
+                    data-mm-role="deck-wave"
+                    [attr.data-mm-deck]="$index"
+                    data-mm-wave="0"
+                    [attr.aria-label]="'Onda senoidal deck ' + ($index + 1)"
+                    [class.hover-global]="ui.isHovering()"
+                    (click)="setTrackWave(track.id, 'sine')"
+                    [class.active]="track.type === 'sine'">
+                    <span class="btn-label">SIN</span>
+                    @if (voiceNav.enabled()) {
+                      <span class="voz-pista voz-pista--dentro-boton" aria-hidden="true">{{ pistaWave('sine', $index) }}</span>
+                    }
+                  </button>
+                </div>
+                <div class="mm-speak-cell wave-cell">
+                  <button class="wave-btn raise"
+                    type="button"
+                    data-mm-role="deck-wave"
+                    [attr.data-mm-deck]="$index"
+                    data-mm-wave="1"
+                    [attr.aria-label]="'Onda triangular deck ' + ($index + 1)"
+                    [class.hover-global]="ui.isHovering()"
+                    (click)="setTrackWave(track.id, 'triangle')"
+                    [class.active]="track.type === 'triangle'">
+                    <span class="btn-label">TRI</span>
+                    @if (voiceNav.enabled()) {
+                      <span class="voz-pista voz-pista--dentro-boton" aria-hidden="true">{{ pistaWave('triangle', $index) }}</span>
+                    }
+                  </button>
+                </div>
+                <div class="mm-speak-cell wave-cell">
+                  <button class="wave-btn raise"
+                    type="button"
+                    data-mm-role="deck-wave"
+                    [attr.data-mm-deck]="$index"
+                    data-mm-wave="2"
+                    [attr.aria-label]="'Onda cuadrada deck ' + ($index + 1)"
+                    [class.hover-global]="ui.isHovering()"
+                    (click)="setTrackWave(track.id, 'square')"
+                    [class.active]="track.type === 'square'">
+                    <span class="btn-label">SQR</span>
+                    @if (voiceNav.enabled()) {
+                      <span class="voz-pista voz-pista--dentro-boton" aria-hidden="true">{{ pistaWave('square', $index) }}</span>
+                    }
+                  </button>
+                </div>
+                <div class="mm-speak-cell wave-cell">
+                  <button class="wave-btn raise"
+                    type="button"
+                    data-mm-role="deck-wave"
+                    [attr.data-mm-deck]="$index"
+                    data-mm-wave="3"
+                    [attr.aria-label]="'Onda diente de sierra deck ' + ($index + 1)"
+                    [class.hover-global]="ui.isHovering()"
+                    (click)="setTrackWave(track.id, 'sawtooth')"
+                    [class.active]="track.type === 'sawtooth'">
+                    <span class="btn-label">SAW</span>
+                    @if (voiceNav.enabled()) {
+                      <span class="voz-pista voz-pista--dentro-boton" aria-hidden="true">{{ pistaWave('sawtooth', $index) }}</span>
+                    }
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    
+    <div class="middle-section">
+      <div class="channels-section" [class.hover-global]="ui.isHovering()">
+        <div class="mm-section-head-wrap">
+          <div class="section-header" [class.hover-global]="ui.isHovering()">MIXER — Canales</div>
+          <span [appSpeakable]="'Sección mezclador, canales.'"></span>
+        </div>
+        <div class="faders-row">
+          @for (track of tracks(); track track.id) {
+            <div class="channel-strip inset" [class.hover-global]="ui.isHovering()">
+              <div class="channel-label-row">
+                <div class="channel-label">{{ track.name }}</div>
+                <span [appSpeakable]="'Canal ' + track.name + '.'"></span>
+              </div>
+
+              <div class="fader-group" [class.mm-slider-voz-activo]="isVolSliderVozActivo($index)">
+                <div class="fader-label-small">VOL</div>
+                @if (voiceNav.enabled()) {
+                  <span class="voz-pista voz-pista--debajo-slider" aria-hidden="true">{{ pistaVol($index) }}</span>
+                }
+                <input type="range" class="fader vertical" min="0" max="100" step="1"
+                  data-mm-role="track-vol"
+                  [attr.data-mm-track]="$index"
+                  [attr.aria-label]="'Volumen ' + track.name"
+                  [value]="track.volume"
+                  (input)="setTrackVolume(track.id, +$any($event.target).value)">
+                <div class="fader-value">{{ track.volume }}</div>
+              </div>
+
+              <div class="eq-section">
+                <div class="eq-band" [class.mm-slider-voz-activo]="isEqSliderVozActivo($index, 'bass')">
+                  <label class="eq-label">BASS</label>
+                  @if (voiceNav.enabled()) {
+                    <span class="voz-pista voz-pista--debajo-slider" aria-hidden="true">{{ pistaEq('bass', $index) }}</span>
+                  }
+                  <input type="range" class="eq-slider" min="-12" max="12" step="1"
+                    data-mm-role="track-eq"
+                    [attr.data-mm-track]="$index"
+                    data-mm-band="bass"
+                    [attr.aria-label]="'Bajos ' + track.name"
+                    [value]="track.bass"
+                    (input)="setEQ(track.id, 'bass', +$any($event.target).value)">
+                  <span class="eq-value">{{ track.bass }}</span>
+                </div>
+                <div class="eq-band" [class.mm-slider-voz-activo]="isEqSliderVozActivo($index, 'mid')">
+                  <label class="eq-label">MID</label>
+                  @if (voiceNav.enabled()) {
+                    <span class="voz-pista voz-pista--debajo-slider" aria-hidden="true">{{ pistaEq('mid', $index) }}</span>
+                  }
+                  <input type="range" class="eq-slider" min="-12" max="12" step="1"
+                    data-mm-role="track-eq"
+                    [attr.data-mm-track]="$index"
+                    data-mm-band="mid"
+                    [attr.aria-label]="'Medios ' + track.name"
+                    [value]="track.mid"
+                    (input)="setEQ(track.id, 'mid', +$any($event.target).value)">
+                  <span class="eq-value">{{ track.mid }}</span>
+                </div>
+                <div class="eq-band" [class.mm-slider-voz-activo]="isEqSliderVozActivo($index, 'treble')">
+                  <label class="eq-label">TREBLE</label>
+                  @if (voiceNav.enabled()) {
+                    <span class="voz-pista voz-pista--debajo-slider" aria-hidden="true">{{ pistaEq('treble', $index) }}</span>
+                  }
+                  <input type="range" class="eq-slider" min="-12" max="12" step="1"
+                    data-mm-role="track-eq"
+                    [attr.data-mm-track]="$index"
+                    data-mm-band="treble"
+                    [attr.aria-label]="'Agudos ' + track.name"
+                    [value]="track.treble"
+                    (input)="setEQ(track.id, 'treble', +$any($event.target).value)">
+                  <span class="eq-value">{{ track.treble }}</span>
+                </div>
+              </div>
+            </div>
+          }
+
+          
+          <div class="channel-strip inset master-strip" [class.hover-global]="ui.isHovering()">
+            <div class="channel-label-row">
+              <div class="channel-label">MASTER</div>
+              <span [appSpeakable]="'Canal master, salida general.'"></span>
+            </div>
+            <div class="fader-group" [class.mm-slider-voz-activo]="isMasterVolSliderVozActivo()">
+              <div class="fader-label-small">OUT</div>
+              @if (voiceNav.enabled()) {
+                <span class="voz-pista voz-pista--debajo-slider" aria-hidden="true">{{ pistaVolMaster() }}</span>
+              }
+              <input type="range" class="fader vertical master" min="0" max="100" step="1"
+                data-mm-role="master-vol"
+                aria-label="Volumen master"
+                [value]="masterVolume()"
+                (input)="setMasterVolume(+$any($event.target).value)">
+              <div class="fader-value master-value">{{ masterVolume() }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      
+      <div class="visualizer-section inset" [class.hover-global]="ui.isHovering()">
+        <div class="mm-section-head-wrap">
+          <div class="section-header" [class.hover-global]="ui.isHovering()">SPECTRUM &amp; EFFECTS</div>
+          <span [appSpeakable]="'Sección espectro y efectos.'"></span>
+        </div>
+
+        <div class="spectrum-display" aria-hidden="true">
+          @for (bar of spectrum(); track $index) {
+            <div class="spectrum-bar" [style.height.%]="bar"></div>
+          }
+        </div>
+
+        <div class="beat-section">
+          <div class="beat-label-row">
+            <div class="beat-label">Click o mantén pulsado</div>
+            <span [appSpeakable]="'Instrucción: haga clic o mantenga pulsado los pads de percusión.'"></span>
+          </div>
+          <div class="beat-pads">
+            @for (pad of beatPads(); track pad.id) {
+              <div class="mm-speak-cell beat-pad-cell">
+                <button class="beat-pad raise"
+                  type="button"
+                  data-mm-role="effect-pad"
+                  [attr.data-mm-pad]="$index"
+                  [attr.data-mm-pad-id]="pad.id"
+                  [attr.aria-label]="pad.name"
+                  [class.hover-global]="ui.isHovering()"
+                  (mousedown)="beatMouseDown(pad.id)" (mouseup)="beatMouseUp(pad.id)"
+                  (mouseleave)="beatMouseUp(pad.id)"
+                  (touchstart)="beatMouseDown(pad.id); $event.preventDefault()"
+                  (touchend)="beatMouseUp(pad.id); $event.preventDefault()"
+                  (keydown.enter)="onPadKey($event, pad.id, true)"
+                  (keyup.enter)="onPadKey($event, pad.id, false)"
+                  (keydown.space)="onPadKey($event, pad.id, true)"
+                  (keyup.space)="onPadKey($event, pad.id, false)"
+                  (blur)="beatMouseUp(pad.id)">
+                  <span class="btn-label">{{ pad.name }}</span>
+                  @if (voiceNav.enabled()) {
+                    <span class="voz-pista voz-pista--dentro-boton" aria-hidden="true">{{ pistaPad(pad.id) }}</span>
+                  }
+                </button>
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="beat-indicator-row">
+          <div class="beat-indicator" [class.pulse]="isBeating()">
+            <div class="beat-light" aria-hidden="true"></div>
+            SYNC
+          </div>
+          <span [appSpeakable]="'Indicador de sincronía del ritmo, SYNC.'"></span>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="rec-section raise" [class.hover-global]="ui.isHovering()">
+      <div class="mm-section-head-wrap">
+        <div class="section-header" [class.hover-global]="ui.isHovering()">GRABACIÓN</div>
+        <span [appSpeakable]="'Sección grabación.'"></span>
+      </div>
+      <div class="rec-controls">
+        <div class="mm-speak-cell rec-btn-cell">
+          <button class="rec-button raise"
+            type="button"
+            data-mm-role="record"
+            [class.hover-global]="ui.isHovering()"
+            [class.recording]="isRecording()"
+            [attr.aria-label]="isRecording() ? 'Detener grabación' : 'Iniciar grabación'"
+            (click)="toggleRecording()">
+            <span class="btn-label">{{ isRecording() ? '⏹ DETENER' : '⏺ GRABAR' }}</span>
+            @if (voiceNav.enabled()) {
+              <span class="voz-pista voz-pista--dentro-boton" aria-hidden="true">{{ pistaRecord() }}</span>
+            }
+          </button>
+        </div>
+
+        <div class="rec-timer-row">
+          <span class="rec-timer" [class.active]="isRecording()">
+            {{ recordingTime() }}
+          </span>
+          <span [appSpeakable]="'Tiempo de grabación ' + recordingTime() + '.'"></span>
+        </div>
+
+        <div class="rec-status-row">
+          <span class="rec-status">
+            @if (isRecording()) {
+              <span class="blink">● Grabando...</span>
+            } @else if (downloadUrl()) {
+              Grabación lista —
+              <a [href]="downloadUrl()!"
+                 download="mix.webm"
+                 class="dl-link"
+                 data-mm-role="download"
+                 aria-label="Descargar mix grabado">
+                <span class="btn-label">⬇ Descargar mix</span>
+                @if (voiceNav.enabled()) {
+                  <span class="voz-pista voz-pista--debajo-control" aria-hidden="true">descargar</span>
+                }
+              </a>
+            } @else {
+              Listo para grabar
+            }
+          </span>
+          <span [appSpeakable]="textoEstadoGrabacion()"></span>
+          @if (downloadUrl()) {
+            <span class="mm-dl-speak">
+              <span [appSpeakable]="'Botón. Descargar mix grabado en formato webm.'"></span>
+            </span>
+          }
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+    @if (voiceNav.enabled()) {
+      <aside class="voz-pistas-mesa voz-pistas-mesa--der" aria-hidden="true">
+        <p class="voz-pistas-mesa-titulo">Ajustar slider</p>
+        <span class="voz-pista voz-pista--mesa-unidad">1 más / 1 menos</span>
+        <span class="voz-pista voz-pista--mesa-unidad">5 más / 5 menos</span>
+        <span class="voz-pista voz-pista--mesa-unidad">20 más / 20 menos</span>
+        <span class="voz-pista voz-pista--mesa-unidad voz-pista--mesa-mas">… diez, quince, cien…</span>
+        @if (mesaSliderVozActivo()) {
+          <span class="voz-pista voz-pista--mesa-activo">Editando: {{ mesaSliderActivoLabel() }}</span>
+        }
+      </aside>
+    }
+  </div>
+
+  
+  <div class="win95-statusbar mm-statusbar" [class.hover-global]="ui.isHovering()">
+    <div class="status-cell-wrap">
+      <div class="status-cell">DECKS: {{ activeTracksCount() }} activos</div>
+      <span [appSpeakable]="textoBarraEstado(0)"></span>
+    </div>
+    <div class="status-cell-wrap">
+      <div class="status-cell">PADS: 8</div>
+      <span [appSpeakable]="textoBarraEstado(1)"></span>
+    </div>
+    <div class="status-cell-wrap">
+      <div class="status-cell" [class.active]="isRecording()">
+        {{ isRecording() ? '● REC ' + recordingTime() : '♪ READY' }}
+      </div>
+      <span [appSpeakable]="textoBarraEstado(2)"></span>
+    </div>
+  </div>
+</div>

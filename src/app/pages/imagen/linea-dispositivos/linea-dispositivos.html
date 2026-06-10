@@ -1,0 +1,63 @@
+<div
+  class="timeline-wrapper"
+  [class.hover-global]="ui.isHovering()"
+  [class.linea-voz-activa]="lineaVozActiva()"
+>
+  <div class="timeline-track" (focusout)="onFocusOut($event)">
+    <div class="timeline-line"></div>
+
+    @for (dispositivo of dispositivos; track $index) {
+      <button type="button"
+           class="timeline-item"
+           [class.timeline-item--seleccionado]="dispositivoSeleccionado === dispositivo"
+           [attr.aria-label]="dispositivo.nombre + ', ' + dispositivo.anio"
+           (click)="toggleSeleccion(dispositivo)"
+           (focus)="!isMobile() && seleccionar(dispositivo)"
+           (mouseenter)="!isMobile() && !lineaVozActiva() && seleccionar(dispositivo)"
+           (mouseleave)="!isMobile() && !lineaVozActiva() && deseleccionar()">
+
+        <div class="linea-device-block">
+          @if (voiceNav.enabled()) {
+            <span class="voz-pista voz-pista--linea" aria-hidden="true">{{ pistaVoz(dispositivo.clave) }}</span>
+          }
+          <div class="win95-icon">
+            <div class="device-img-stack">
+              <img class="device-img device-img--base" [src]="dispositivo.dispositivoImg" [alt]="dispositivo.nombre" />
+              <img class="device-img device-img--hover" [src]="dispositivo.dispositivoImgHover" alt="" aria-hidden="true" />
+            </div>
+            <span class="icon-label">{{ dispositivo.nombre }}</span>
+          </div>
+        </div>
+
+        <div class="timeline-dot"></div>
+        <div class="timeline-year" [appSpeakable]="dispositivo.anio">{{ dispositivo.anio }}</div>
+
+        @if (dispositivoSeleccionado === dispositivo) {
+          <div class="info-panel mobile-only">
+            <div class="info-panel-bar">
+              <span>{{ dispositivo.nombre }}</span>
+              <div class="close-btn">x</div>
+            </div>
+            <div class="info-panel-body">
+              <p [innerHTML]="texto(dispositivo.clave)" appSpeakable></p>
+            </div>
+          </div>
+        }
+      </button>
+    }
+  </div>
+
+  @if (dispositivoSeleccionado && !isMobile()) {
+    <div class="info-panel desktop-only">
+      <div class="info-panel-bar">
+        <span [appSpeakable]="dispositivoSeleccionado.nombre">{{ dispositivoSeleccionado.nombre }}</span>
+        <div class="close-btn">x</div>
+      </div>
+      <div class="info-panel-body">
+        @for (d of [dispositivoSeleccionado]; track d.clave) {
+          <p [innerHTML]="texto(d.clave)" appSpeakable></p>
+        }
+      </div>
+    </div>
+  }
+</div>

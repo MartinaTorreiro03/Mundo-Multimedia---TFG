@@ -1,0 +1,210 @@
+
+.mosaico-container {
+  display: grid;
+  gap: 20px;
+  margin: clamp(20px, 6vw, 150px);
+  padding: 15px;
+  background-color: var(--mosaico-bg, #c0c0c0);
+
+  border: 2px solid;
+  border-top-color: var(--mosaico-border-light, #dfdfdf);
+  border-left-color: var(--mosaico-border-light, #dfdfdf);
+  border-right-color: var(--mosaico-border-dark, #808080);
+  border-bottom-color: var(--mosaico-border-dark, #808080);
+
+  grid-template-columns: repeat(4, 1fr);
+
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+    margin: 20px;
+  }
+}
+
+.item-mosaico {
+  position: relative;
+  cursor: pointer;
+  padding: 6px;
+  background-color: var(--mosaico-bg, #c0c0c0);
+  border: 3px solid;
+  border-top-color: var(--mosaico-border-light, #dfdfdf);
+  border-left-color: var(--mosaico-border-light, #dfdfdf);
+  border-right-color: var(--mosaico-border-dark, #808080);
+  border-bottom-color: var(--mosaico-border-dark, #808080);
+
+  font: inherit;
+  color: inherit;
+  appearance: none;
+  -webkit-appearance: none;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  text-align: left;
+
+  .item-mosaico-foto {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  img {
+    width: 100%;
+    height: clamp(250px, 40vh, 400px);
+    object-fit: cover;
+    display: block;
+    border: 2px solid var(--mosaico-border-color, #808080);
+
+    &:hover {
+      opacity: 0.85;
+    }
+  }
+
+  .voz-pista--mosaico {
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    margin-top: 6px;
+    align-self: center;
+    text-align: center;
+    white-space: normal;
+    line-height: 1.2;
+    box-sizing: border-box;
+  }
+}
+
+.popup-grid-layout {
+  display: grid;
+  gap: 15px;
+  padding: 12px;
+  background-color: var(--mosaico-bg, #c0c0c0);
+  box-sizing: border-box;
+
+  border: 2px solid;
+  border-top-color: var(--mosaico-border-light, #dfdfdf);
+  border-left-color: var(--mosaico-border-light, #dfdfdf);
+  border-right-color: var(--mosaico-border-dark, #808080);
+  border-bottom-color: var(--mosaico-border-dark, #808080);
+
+  width: calc(100vw - (2 * clamp(20px, 6vw, 150px)));
+  max-width: 1000px;
+
+  margin: auto;
+  max-height: 85vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    "foto info"
+    "descripcion descripcion";
+
+  .area-foto-grande {
+    grid-area: foto;
+    background: #000;
+    border: 2px solid var(--mosaico-border-color, #808080);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+
+    img {
+      max-width: 100%;
+      height: auto;
+      max-height: 350px;
+      object-fit: contain;
+    }
+  }
+
+  .area-info {
+    grid-area: info;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+
+    .area-nombre-dispositivo {
+      text-align: center;
+
+      h3 > button.speak-btn {
+        min-height: 0;
+        min-width: 0;
+        height: 24px;
+        padding: 3px 5px;
+        font-size: 12px;
+        line-height: 1;
+        margin-left: 0;
+      }
+
+      h3 > button.speak-btn .speak-btn-label {
+        display: none;
+      }
+    }
+  }
+
+  .area-img-dispositivo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: clamp(250px, 15vh, 500px);
+    width: 100%;
+    overflow: hidden;
+
+    img {
+      max-height: 100%;
+      max-width: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+    }
+  }
+
+  .area-descripcion-larga {
+    grid-area: descripcion;
+    background: color-mix(in srgb, var(--mosaico-bg, #c0c0c0) 35%, white);
+    padding: 12px;
+    border: 2px solid var(--mosaico-border-color, #808080);
+    font-size: 15px;
+    line-height: 1.4;
+    word-wrap: break-word;
+
+    p > button.speak-btn {
+      min-height: 0;
+      min-width: 0;
+      height: 24px;
+      padding: 3px 5px;
+      font-size: 12px;
+      line-height: 1;
+      margin-left: 4px;
+      vertical-align: middle;
+    }
+
+    p > button.speak-btn .speak-btn-label {
+      display: none;
+    }
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "info"
+      "foto"
+      "descripcion";
+
+    width: 90vw;
+
+    .area-foto-grande {
+      max-height: 180px;
+      img { max-height: 180px; }
+    }
+
+    .area-img-dispositivo {
+      height: clamp(120px, 10vh, 120px);
+      margin-bottom: 5px;
+    }
+  }
+}

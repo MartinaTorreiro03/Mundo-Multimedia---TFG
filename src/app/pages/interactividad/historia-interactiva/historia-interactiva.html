@@ -1,0 +1,70 @@
+<div class="main-wrapper" [class.hover-global]="ui.isHovering()">
+  <div class="contenedor">
+    <div *ngFor="let t of tarjetas"
+         class="tarjeta"
+         tabindex="0"
+         role="button"
+         [attr.aria-label]="t.titulo + '. ' + textoTarjeta(t.clave)"
+         [class.hover-global]="ui.isHovering()"
+         [class.is-active]="t.isHovered"
+         (mouseenter)="onMouseEnter(t)"
+         (mouseleave)="onMouseLeave(t)"
+         (focus)="onMouseEnter(t)"
+         (blur)="onMouseLeave(t)">
+
+      <img [src]="getImagenTarjeta(t)" class="icono" alt="">
+
+      <div class="hi-titulo-row">
+        <h2 class="titulo">{{ t.titulo }}</h2>
+        <span [appSpeakable]="t.titulo + '.'"></span>
+        @if (voiceNav.enabled()) {
+          <span class="voz-pista voz-pista--debajo-control" aria-hidden="true">{{ tarjetaHint(t.id) }}</span>
+        }
+      </div>
+      <p class="texto" appSpeakable>{{ textoTarjeta(t.clave) }}</p>
+
+      <div *ngIf="t.tipo === 'procesando'" class="procesando"></div>
+
+      <video *ngIf="t.tipo === 'video' && t.isHovered" 
+             [src]="t.videoSrc" 
+             muted loop autoplay 
+             class="preview-video">
+      </video>
+
+      </div>
+  </div>
+
+  <div class="boton-pong-row">
+    <div class="boton-pong-inner">
+      <button class="boton-pong"
+              [class.hover-activo]="ui.isHovering()"
+              aria-label="Abrir el mini juego Pong"
+              (click)="abrirJuego()">
+        🕹️ Jugar Pong
+      </button>
+      <span [appSpeakable]="'Botón. Pong.'"></span>
+    </div>
+    @if (voiceNav.enabled()) {
+      <span class="voz-pista voz-pista--debajo-fuera" aria-hidden="true">pong</span>
+    }
+  </div>
+
+  <app-popup
+    class="popup-pong-responsive"
+    *ngIf="mostrarModal"
+    [title]="'Mini Pong - Interactividad'"
+    [size]="pongSize"
+    [theme]="pongTheme"
+    (closed)="cerrarJuego()">
+    
+    <div class="contenido-modal-pong">
+      <canvas
+        #pongCanvas
+        width="780"
+        height="550"
+        (touchstart)="onTouchMove($event)"
+        (touchmove)="onTouchMove($event)"></canvas>
+    </div>
+    
+  </app-popup>
+</div>

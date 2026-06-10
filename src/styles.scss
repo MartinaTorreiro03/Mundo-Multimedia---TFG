@@ -1,1 +1,511 @@
-/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+
+/* =========================
+   1) Fuentes cargadas
+   ========================= */
+@font-face {
+  font-family: 'Kanit';
+  src: url('/assets/fuentes/Kanit/Kanit-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('/assets/fuentes/opendyslexic/OpenDyslexic-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* =========================
+   2) Variables globales
+   ========================= */
+:root {
+  --app-font-family: 'Kanit', sans-serif;
+  --app-font-scale: 1;
+  --app-heading-scale: 1
+}
+
+html.font-dyslexic {
+  --app-font-family: 'OpenDyslexic', Arial, sans-serif;
+  --app-font-scale: 0.8;
+  --app-heading-scale: 0.8;
+}
+
+/* =========================
+   3) Angular Material theme + escala global real (rem)
+   ========================= */
+html {
+  font-size: calc(16px * var(--app-font-scale));
+
+  @include mat.theme((
+    color: (
+      primary: mat.$magenta-palette,
+      tertiary: mat.$violet-palette,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
+}
+
+/* =========================
+   4) Estilos base
+   ========================= */
+body {
+  color-scheme: light;
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+
+  font: var(--mat-sys-body-medium);
+
+  margin: 0;
+  padding: 0;
+}
+
+/* =========================
+   5) Forzar tipografía final (sin tocar tu font: de Material)
+   ========================= */
+body {
+  font-family: var(--app-font-family) !important;
+}
+
+.mat-typography,
+.mat-mdc-typography {
+  font-family: var(--app-font-family) !important;
+}
+
+/* TÍTULOS HTML */
+html.font-dyslexic h1 { font-size: calc(12rem * var(--app-heading-scale)) !important; }
+html.font-dyslexic h2 { font-size: calc(5rem   * var(--app-heading-scale)) !important; }
+html.font-dyslexic h3 { font-size: calc(2rem * var(--app-heading-scale)) !important; }
+
+.mat-headline-large,
+.mat-headline-medium,
+.mat-headline-small,
+.mat-title-large,
+.mat-title-medium,
+.mat-title-small {
+  font-size: calc(1em * var(--app-heading-scale)) !important;
+  line-height: 1.2 !important;
+}
+
+/* Asegurar que controles hereden la tipografía */
+button,
+input,
+select,
+textarea {
+  font-family: var(--app-font-family) !important;
+}
+
+.mat-mdc-button,
+.mat-mdc-raised-button,
+.mat-mdc-outlined-button,
+.mat-mdc-unelevated-button,
+.mat-mdc-fab,
+.mat-mdc-mini-fab,
+.mat-mdc-icon-button {
+  font-family: var(--app-font-family) !important;
+}
+
+.mat-mdc-button .mdc-button__label {
+  font-family: var(--app-font-family) !important;
+}
+
+/* Ventanitas «Dos momentos»: misma tipografía que el resto */
+.ventanita,
+.ventanita .ventanita-titulo,
+.ventanita .ventanita-titulo-texto,
+.ventanita .ventanita-pie,
+.ventanita .ventanita-pie-nombre,
+.ventanita .ventanita-pie-anio,
+.ventanita .ventanita-overlay {
+  font-family: var(--app-font-family) !important;
+}
+
+* {
+  cursor: none !important;
+}
+
+/* REVELACIÓN DE TEXTO POR EL SCROLL */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  will-change: transform, opacity;
+
+  &.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ESTILO DE BOTÓN DE OPCIÓN LECTOR DE PANTALLA
+$speak-bg: #ff8c42;
+$speak-border: #ffb26b;
+$speak-border-lat: #c85a17;
+
+$speak-bg-paused: var(--btn-bg-paused, #ffb300);
+$speak-border-paused: var(--btn-border-paused, #ffd54f);
+$speak-border-lat-paused: var(--btn-border-lat-paused, #8d4d00);
+
+button.speak-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+
+  margin-left: 0.2rem;
+  padding: 10px 14px;
+  min-height: 44px;
+  min-width: 44px;
+
+  font-size: 20px;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+
+  cursor: pointer;
+  vertical-align: middle;
+  color: #000;
+
+  background: $speak-bg;
+  border: 2px solid $speak-border;
+  border-right-color: $speak-border-lat;
+  border-bottom-color: $speak-border-lat;
+  box-shadow: 2px 2px 0 #000;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+
+  &:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0 #000;
+    filter: brightness(1.05);
+  }
+
+  &:focus-visible {
+    outline: 4px solid #d23636;
+    outline-offset: 2px;
+  }
+
+  // estado "reproduciendo"
+  &.active {
+    box-shadow:
+      inset 4px 4px #9c6f00,
+      inset -4px -4px #fff085,
+      2px 2px 0 #000;
+    transform: translate(2px, 2px);
+  }
+
+  // estado "pausado"
+  &.paused {
+    background: $speak-bg-paused;
+    border-color: $speak-border-paused;
+    border-right-color: $speak-border-lat-paused;
+    border-bottom-color: $speak-border-lat-paused;
+  }
+
+  // evita animación si usuario prefiere menos movimiento
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+
+    &:hover,
+    &.active {
+      transform: none;
+    }
+  }
+
+  .speak-btn-label {
+    line-height: 1;
+    font-weight: 700;
+    font-size: 0.8em;
+    white-space: nowrap;
+  }
+}
+
+/* Popup juego: lector compacto (solo icono) */
+app-juego button.speak-btn {
+  min-height: 0 !important;
+  min-width: 0 !important;
+  height: 24px !important;
+  padding: 3px 5px !important;
+  font-size: 12px !important;
+  line-height: 1 !important;
+  margin-left: 0 !important;
+}
+
+app-juego button.speak-btn .speak-btn-label {
+  display: none !important;
+}
+
+/* Carrusel de la principal dentro de app-popup: lector compacto (solo icono) */
+app-popup .content app-carrusel button.speak-btn {
+  min-height: 0 !important;
+  min-width: 0 !important;
+  height: 24px !important;
+  padding: 3px 5px !important;
+  font-size: 12px !important;
+  line-height: 1 !important;
+  margin-left: 0 !important;
+}
+
+app-popup .content app-carrusel button.speak-btn .speak-btn-label {
+  display: none !important;
+}
+
+app-popup .content app-info button.speak-btn {
+  min-height: 36px;
+  min-width: 36px;
+  padding: 6px 10px;
+  font-size: 16px;
+}
+
+/* Reproductores (video): botón lector bajo "Aceptar", centrado y compacto */
+app-reproductores app-popup .btn-aceptar-wrap {
+  align-items: center !important;
+}
+
+app-reproductores app-popup .btn-aceptar-wrap .btn-aceptar {
+  align-self: center !important;
+}
+
+app-reproductores app-popup .btn-aceptar-wrap .btn-aceptar-speak > button.speak-btn {
+  min-height: 0 !important;
+  min-width: 0 !important;
+  height: 24px !important;
+  padding: 3px 5px !important;
+  font-size: 12px !important;
+  line-height: 1 !important;
+  margin-left: 0 !important;
+}
+
+app-reproductores app-popup .btn-aceptar-wrap .btn-aceptar-speak > button.speak-btn .speak-btn-label {
+  display: none !important;
+}
+
+
+/* Pistas de voz junto a controles (solo con navegación por voz activa) */
+.voz-pista {
+  display: block;
+  font-size: clamp(10px, 0.75vw + 8px, 13px);
+  font-weight: 600;
+  line-height: 1.25;
+  color: #ffe8a3;
+  background: rgba(12, 12, 16, 0.9);
+  border: 1px solid rgba(255, 232, 163, 0.45);
+  padding: 3px 7px;
+  border-radius: 5px;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+}
+
+.voz-pista-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+}
+
+.voz-pistas-info {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.35);
+}
+
+app-header nav.menuWrap li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+app-menu-accesibilidad .menu-wrap ul li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.menu-icon-wrap,
+.accs-icon-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+/* Pista bajo el icono (menú navegación, parte superior) */
+.voz-pista--icono-below {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 6px;
+  z-index: 2;
+}
+
+/* Pista a la izquierda del icono (barra inferior / lateral: no tapa el panel de voz) */
+.voz-pista--icono-side {
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-right: 8px;
+  z-index: 2;
+}
+
+app-menu-lateral .barraLateral {
+  position: relative;
+}
+
+/* Pistas de voz en carruseles (portada y popup) */
+.carrusel {
+  position: relative;
+}
+
+.voz-pista--carrusel-open {
+  display: block;
+  align-self: center;
+  margin: 0 auto 8px;
+  width: fit-content;
+  flex-shrink: 0;
+  z-index: 3;
+}
+
+.voz-pista--debajo-control {
+  display: block;
+  margin-top: 6px;
+}
+
+.voz-pista--encima-control {
+  display: block;
+  margin-bottom: 6px;
+}
+
+/* Dentro del botón (esquina): no desplaza el bloque siguiente al hacer scroll por voz */
+.voz-pista--en-boton {
+  position: absolute;
+  top: clamp(6px, 1vw, 12px);
+  right: clamp(8px, 1.2vw, 16px);
+  margin: 0;
+  z-index: 2;
+  font-size: clamp(9px, 0.55vw + 7px, 12px);
+  padding: 2px 6px;
+}
+
+.flecha-wrap {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+
+  .flecha,
+  .popup-nav {
+    pointer-events: auto;
+  }
+
+  &.flecha-wrap--izq {
+    left: 5px;
+  }
+
+  &.flecha-wrap--der {
+    right: 5px;
+  }
+}
+
+.voz-pista--debajo-flecha {
+  margin-top: 5px;
+}
+
+.popup-nav-wrap {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+
+  .popup-nav {
+    pointer-events: auto;
+    position: static;
+    transform: none;
+  }
+
+  &.popup-nav-wrap--prev {
+    left: 5px;
+  }
+
+  &.popup-nav-wrap--next {
+    right: 5px;
+  }
+}
+
+.btn-cerrar-wrap {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.voz-pista--cerrar-popup {
+  position: static;
+  margin: 0;
+  transform: none;
+  white-space: nowrap;
+}
+
+/* Esquina «salir» en menús abiertos por voz/teclado */
+app-header nav.menuWrap,
+app-menu-accesibilidad .menu-wrap,
+app-menu-lateral .menu-wrap {
+  position: relative;
+  overflow: visible;
+}
+
+.voz-pista--menu-corner {
+  position: absolute;
+  top: 0;
+  right: clamp(8px, 1.5vw, 20px);
+  z-index: 3;
+}
+
+/* Paneles y pistas de ayuda (navegación por voz) → OpenDyslexic con la opción activa */
+html.font-dyslexic {
+  .voz-pista,
+  .voz-pista-sep,
+  .voz-pistas-info,
+  .voz-pistas-bloc,
+  .voz-pistas-bloc-texto,
+  .voz-scroll-strip,
+  [class^='voz-pistas-'],
+  [class*='voz-pista'],
+  .voice-transcript-panel,
+  .voice-transcript-head,
+  .voice-transcript-body,
+  .voice-transcript-muted,
+  .voice-cmd,
+  [class^='mm-voz-'],
+  .mm-voz-dibujar-hint,
+  .mm-voz-dibujar-extra,
+  app-voice-transcript-panel {
+    font-family: var(--app-font-family) !important;
+  }
+}
+

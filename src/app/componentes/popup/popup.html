@@ -1,0 +1,47 @@
+<div
+  class="overlay"
+  (click)="backdropClosable ? close() : null"
+  [style.background]="overlayBg"></div>
+
+  <div
+    class="modal"
+    #modalRoot
+    tabindex="-1"
+    (click)="stop($event)"
+    [style.width]="safeWidth"
+    [style.height]="safeHeight"
+    [style.background]="panelBg"
+    [style.color]="panelText"
+    [style.border-color]="borderColor"
+    [style.--insetLight]="insetLight"
+    [style.--insetDark]="insetDark"
+    role="dialog"
+    aria-modal="true">
+
+  <div
+    class="barra-titulo"
+    [style.background]="titlebarBg"
+    [style.color]="titlebarText"
+    [style.border-bottom-color]="titlebarDivider">
+    <span class="titulo-ventana">{{ title }}</span>
+
+    <div class="btn-cerrar-wrap">
+      @if (voiceNav.enabled() && open) {
+        <span class="voz-pista voz-pista--cerrar-popup" aria-hidden="true">cerrar</span>
+      }
+      <button
+        type="button"
+        class="btn-cerrar"
+        (click)="close()"
+        [style.background]="closeBg"
+        [style.--btnLight]="insetLight"
+        [style.--btnDark]="insetDark">
+        ✖
+      </button>
+    </div>
+  </div>
+
+  <div class="content">
+    <ng-content></ng-content>
+  </div>
+</div>

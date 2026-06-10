@@ -1,0 +1,86 @@
+<div class="portada" data-surface="light" [class.hover-global]="ui.isHovering()">
+    <h1 [style.color]="ui.accentColor('h1', h1Colors)" appSpeakable>IMAGEN</h1>
+    <img [src]="imagenPortada()" alt="Portada de la página de imagen">
+</div>
+
+<section id="seccion1" data-surface="light" [class.hover-global]="ui.isHovering()">
+    <h2 [style.color]="ui.accentColor('h2')" appSpeakable>LA MEMORIA EN PAPEL Y LUZ</h2>
+    <h3 [style.color]="ui.accentColor('h3')" [class.hover-global]="ui.isHovering()" scrollReveal appSpeakable>
+        Cuando la imagen era única e irrepetible: Antes de los píxeles, la imagen ya contaba historias en papel, película y 
+        lienzos. La memoria del mundo comenzó con trazos y luces capturadas en soportes físicos.</h3>
+    <app-mosaico></app-mosaico>
+    <p [innerHTML]="texto('seccion1')" [style.color]="ui.accentColorParrafo()" scrollReveal appSpeakable></p>
+</section>
+
+<section id="seccion2" data-surface="light" [class.hover-global]="ui.isHovering()">
+    <h2 [style.color]="ui.accentColor('h2')" appSpeakable>DE LA FOTO ÚNICA A LA INMEDIATEZ</h2>
+    <h3 [style.color]="ui.accentColor('h3')" [class.hover-global]="ui.isHovering()" scrollReveal appSpeakable>
+        Con el salto a lo digital, hacer una foto dejó de ser un acto solemne. Pasamos de elegir cuidadosamente cada disparo a 
+        llenar nuestras memorias de miles de imágenes.</h3>
+    <app-linea-dispositivos></app-linea-dispositivos>
+    <p [innerHTML]="texto('seccion2')" [style.color]="ui.accentColorParrafo()" scrollReveal appSpeakable></p>
+</section>
+
+<section id="seccion3" data-surface="light" [class.hover-global]="ui.isHovering()">
+    <h2 [style.color]="ui.accentColor('h2')" scrollReveal appSpeakable>LA IMAGEN YA NO VIAJA SOLA</h2>
+    <h3 [style.color]="ui.accentColor('h3')" [class.hover-global]="ui.isHovering()" scrollReveal appSpeakable>
+        En la multimedia actual, la imagen se transforma y se mezcla: se mueve como vídeo, se proyecta en 3D, se vive en realidad 
+        aumentada y se comparte en tiempo real.</h3>
+    <p [innerHTML]="texto('seccion3')" [style.color]="ui.accentColorParrafo()" scrollReveal appSpeakable></p>
+    <app-filtros></app-filtros>
+
+    <div class="seccion3-cierre">
+        <div class="ventanita" scrollReveal [class.hover-global]="ui.isHovering()" [class.imagen-ventanita-voz-activa]="ventanitaVozActiva()">
+            <div class="ventanita-titulo">
+                <span class="ventanita-titulo-texto">Dos momentos de la imagen</span>
+                <span [appSpeakable]="'Ventana. Dos momentos de la imagen: un ejemplo del pasado y uno más reciente. Resume la evolución que has visto en la página. Pulsa cada vídeo para leer más.'"></span>
+            </div>
+            <div class="ventanita-cuerpo">
+                @for (d of dispositivos; track d.clave) {
+                    <div class="ventanita-item">
+                        <button type="button"
+                                class="ventanita-video-btn"
+                                [attr.aria-label]="'Abrir información sobre ' + d.nombre"
+                                [class.hover-global]="ui.isHovering()"
+                                (mouseenter)="onVideoHover($event, true)"
+                                (mouseleave)="onVideoHover($event, false)"
+                                (click)="abrirDispositivo(d)">
+                            <video [src]="d.video" autoplay loop muted playsinline></video>
+                            <span class="ventanita-overlay" aria-hidden="true">Ver más</span>
+                        </button>
+                        <div class="ventanita-pie">
+                            <span class="ventanita-pie-nombre">{{ d.nombre }}</span>
+                            <span class="ventanita-pie-anio">{{ d.anio }}</span>
+                            <span class="ventanita-pie-lector"
+                                  [appSpeakable]="'Botón. ' + d.nombre + ', ' + d.anio + '. Pulsa para ver más información.'">
+                            </span>
+                            @if (voiceNav.enabled()) {
+                              <span class="voz-pista voz-pista--debajo-control" aria-hidden="true">{{ pistaVozDispositivo(d.clave) }}</span>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="siguiente-wrap">
+          <button class="btn-seccion3" (click)="siguientePagina()" [class.hover-global]="ui.isHovering()">Siguiente página</button>
+          @if (voiceNav.enabled()) {
+            <span class="voz-pista voz-pista--debajo-control" aria-hidden="true">{{ hint('siguiente') }}</span>
+          }
+          <span [appSpeakable]="'Botón. Siguiente página'"></span>
+        </div>
+    </div>
+
+    <app-popup class="popup-dos-momentos" *ngIf="isDispositivoPopupOpen && dispositivoSeleccionado"
+               [title]="dispositivoSeleccionado.nombre + ' · ' + dispositivoSeleccionado.anio"
+               [theme]="imagenDispositivoTheme()"
+               [size]="{ w: 720 }"
+               (closed)="cerrarDispositivo()">
+        <div class="dispositivo-popup">
+            <p class="dispositivo-popup-texto" appSpeakable>
+                {{ textoDispositivo(dispositivoSeleccionado.clave) }}
+            </p>
+        </div>
+    </app-popup>
+</section>

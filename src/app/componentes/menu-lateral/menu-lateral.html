@@ -1,0 +1,64 @@
+<div class="barraLateral">
+  <div
+    class="menu-wrap"
+    [class.hidden]="!visible() && !keyboardMenuOpen()"
+  >
+    @if (voiceMenuSalirHint()) {
+      <span class="voz-pista voz-pista--menu-corner voz-pista--menu-corner-lateral" aria-hidden="true">salir</span>
+    }
+    <div class="voz-pista-col voz-pista-col--info">
+      @if (voiceHints()) {
+        <span class="voz-pista">información</span>
+      }
+      <div class="lateral-option-row lateral-info-btn">
+        <img
+          [src]="iconoInfo"
+          alt="Información"
+          role="button"
+          appContrasteIconos
+          (surfaceChange)="onSurfaceChangeInfo($event)"
+          (mouseenter)="onEnterInfo()"
+          (mouseleave)="onLeaveInfo()"
+          (click)="openPopup()">
+        <span [appSpeakable]="'Información'"></span>
+      </div>
+    </div>
+    <div class="voz-pista-col">
+      @if (voiceHints()) {
+        <span class="voz-pista">tipografía</span>
+      }
+      <div class="lateral-option-row">
+        <img
+          [src]="iconoTipo"
+          alt="Cambiar tipografía"
+          appContrasteIconos
+          (surfaceChange)="onSurfaceChangeTipo($event)"
+          (mouseenter)="onEnterTipo()"
+          (mouseleave)="onLeaveTipo()"
+          (click)="onToggleFont()"
+          role="button"/>
+        <span [appSpeakable]="'Cambio de tipografía'"></span>
+      </div>
+    </div>
+    <div class="voz-pista-col">
+      @if (voiceHints()) {
+        <span class="voz-pista">color</span>
+      }
+      <div class="lateral-option-row">
+        <img
+          [src]="iconoColor"
+          alt="Cambio de colores"
+          role="button"
+          appContrasteIconos
+          (surfaceChange)="onSurfaceChangeColor($event)"
+          (mouseenter)="onEnterColor()"
+          (mouseleave)="onLeaveColor()"
+          (click)="onToggleColor()">
+        <span [appSpeakable]="'Cambio de color'"></span>
+      </div>
+    </div>
+    @if (voiceIconHint()) {
+      <span class="voz-pista voz-pista--lateral" aria-hidden="true">lateral</span>
+    }
+  </div>
+</div>

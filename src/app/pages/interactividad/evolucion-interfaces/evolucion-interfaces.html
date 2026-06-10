@@ -1,0 +1,100 @@
+<div class="evolucion-wrapper">
+
+  
+  <div class="timeline-container" [class.hover-global]="ui.isHovering()">
+    <div class="timeline">
+      <div class="ei-epoca-cell" *ngFor="let epoca of epocas">
+        <button type="button"
+                class="epoca-btn"
+                [attr.data-epoca-id]="epoca.id"
+                [class.hover-global]="ui.isHovering()"
+                [class.activa]="epocaActual.id === epoca.id"
+                [class.pulsado-voz]="epocaPulsadaId === epoca.id"
+                [style.--border-color]="epoca.borderColor"
+                [attr.aria-label]="epoca.nombre + '. ' + epoca.descripcion"
+                (click)="seleccionarEpoca(epoca)"
+                [title]="epoca.descripcion">
+          <span class="icon" aria-hidden="true">{{ epoca.icon }}</span>
+          <span class="nombre">{{ epoca.nombre }}</span>
+        </button>
+        <span [appSpeakable]="'Botón. ' + epoca.nombre + '. ' + epoca.descripcion + '.'"></span>
+        @if (voiceNav.enabled()) {
+          <span class="voz-pista voz-pista--debajo-fuera" aria-hidden="true">{{ epocaVozHint(epoca.id) }}</span>
+        }
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="canvas-container"
+       #canvasContainer
+       tabindex="0"
+       role="application"
+       [attr.aria-label]="voiceNav.enabled()
+         ? (epocaActual.interactionType === 'multi-touch'
+         ? 'Pantallas táctiles en modo voz. Di 1, 2, 3 o 4 para tocar el lienzo en ese lado.'
+         : 'Lienzo en modo voz. Di 1, 2, 3 o 4 para mover el cursor en esa dirección.')
+         : 'Lienzo interactivo. Mueve con flechas, Espacio para hacer clic, Enter o Escape para salir.'">
+    <canvas #matrizCanvas
+            width="800"
+            height="600"
+            class="matriz-canvas">
+    </canvas>
+
+    @if (voiceNav.enabled()) {
+      <div class="ei-zonas-voz" aria-hidden="true">
+        <span class="ei-zona-voz ei-zona-voz--izq" [class.activa]="direccionVozActiva === 1">1</span>
+        <span class="ei-zona-voz ei-zona-voz--arr" [class.activa]="direccionVozActiva === 2">2</span>
+        <span class="ei-zona-voz ei-zona-voz--der" [class.activa]="direccionVozActiva === 3">3</span>
+        <span class="ei-zona-voz ei-zona-voz--abj" [class.activa]="direccionVozActiva === 4">4</span>
+      </div>
+    }
+
+    <div class="overlay-info">
+      <div class="info-box" [class.hover-global]="ui.isHovering()">
+        <div class="ei-overlay-line">
+          <strong>{{ epocaActual.nombre }}</strong>
+          <span [appSpeakable]="epocaActual.nombre"></span>
+        </div>
+        <div class="ei-overlay-line ei-overlay-line--desc">
+          <p>{{ epocaActual.descripcion }}</p>
+          <span [appSpeakable]="epocaActual.descripcion"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="descripcion-epocas" [class.hover-global]="ui.isHovering()">
+    <div class="desc-item">
+      <div class="ei-desc-head">
+        <h3><span aria-hidden="true">{{ epocaActual.icon }}</span> {{ epocaActual.nombre }}</h3>
+        <span [appSpeakable]="epocaActual.nombre"></span>
+      </div>
+      <p appSpeakable>{{ textoEpoca(epocaActual.clave) }}</p>
+    </div>
+  </div>
+
+  
+  @if (keyboardNav.enabled()) {
+    <div class="instrucciones" [class.hover-global]="ui.isHovering()">
+      @if (voiceNav.enabled()) {
+        <p appSpeakable="Modo voz: palabras bajo cada botón para la época. Pulsa Enter para entrar al lienzo y Enter para salir. En pantallas táctiles, también puedes pulsar espacio para interactuar. En pantallas táctiles, 1 2 3 4 son toques en cada lado. En el resto, mueven el cursor.">
+          💡 <strong>Modo voz:</strong> Palabras bajo cada botón (época).
+          Pulsa <strong>Enter</strong> para entrar al lienzo y <strong>Enter</strong> para salir.
+          @if (epocaActual.interactionType === 'multi-touch') {
+            En <strong>pantallas táctiles</strong>, también puedes pulsar <strong>Espacio</strong> para interactuar.
+            Además, <strong>1–4</strong> = <strong>toque</strong> en el lado indicado (varios a la vez).
+          } @else {
+            En el lienzo, di <strong>1</strong>, <strong>2</strong>, <strong>3</strong> o <strong>4</strong> (números en los bordes).
+          }
+        </p>
+      } @else {
+        <p appSpeakable="Interactúa: Pulsa Enter para entrar al lienzo, Enter para salir y usa las flechas para moverte. En pantallas táctiles, también puedes pulsar espacio para interactuar.">
+          💡 <strong>Interactúa:</strong> Pulsa <strong>Enter</strong> para entrar al lienzo y <strong>Enter</strong> para salir.
+          Usa las flechas para moverte y, en <strong>pantallas táctiles</strong>, también puedes pulsar <strong>Espacio</strong> para interactuar.
+        </p>
+      }
+    </div>
+  }
+</div>

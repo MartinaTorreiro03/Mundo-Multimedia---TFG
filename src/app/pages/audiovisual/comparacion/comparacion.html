@@ -1,0 +1,117 @@
+<div class="player-wrap" [class.hover-global]="ui.isHovering()">
+  <div class="split">
+    <figure class="panel" [class.force-bw]="isForceBW()" [class.hover-global]="ui.isHovering()" id="panel-left">
+      <span class="label" appSpeakable="Versión blanco y negro. Muda">Versión B/N — Muda</span>
+      <video #videoLeft [src]="videoConfig.left.src" preload="auto" playsinline muted>
+      </video>
+    </figure>
+
+    <figure class="panel" [class.hover-global]="ui.isHovering()" id="panel-right">
+      <span class="label" appSpeakable>Versión Color — Música y voz</span>
+      <video #videoRight [src]="videoConfig.right.src" preload="auto" playsinline>
+      </video>
+    </figure>
+  </div>
+
+  @if (keyboardNav.enabled()) {
+    <aside class="teclado-pista-cmp" aria-live="polite">
+      En la <strong>barra de duración</strong> y en la <strong>barra de volumen</strong>,
+      pulsa <strong>Enter</strong> para entrar, usa las
+      <strong>flechas laterales</strong> para cambiar el valor y pulsa
+      <strong>Enter</strong> otra vez para salir.
+    </aside>
+  }
+
+  <div class="cmp-voice-shell">
+    @if (voiceNav.enabled()) {
+      <aside class="voz-pistas-cmp voz-pistas-cmp--der" aria-hidden="true">
+        <p class="voz-pistas-cmp-titulo">En el slider</p>
+        @if (cmpSliderVozActivo(); as activo) {
+          <span class="voz-pista voz-pista--cmp-activo">Editando: {{ cmpSliderActivoLabel() }}</span>
+        }
+        <span class="voz-pista voz-pista--cmp-unidad">cinco más / cinco menos</span>
+        <span class="voz-pista voz-pista--cmp-unidad">diez más / diez menos</span>
+        <span class="voz-pista voz-pista--cmp-unidad">veinte más / veinte menos</span>
+        <span class="voz-pista voz-pista--cmp-unidad">… cien más / cien menos</span>
+      </aside>
+    }
+
+    <div class="controls">
+      <div class="cmp-main-actions">
+        <div class="cmp-btn-wrap">
+          <button type="button" class="btn" data-mm-role="cmp-play"
+                  [class.hover-global]="ui.isHovering()" (click)="playBoth()">►</button>
+          @if (voiceNav.enabled()) {
+            <span class="voz-pista voz-pista--debajo-fuera" aria-hidden="true">{{ pistaPlay() }}</span>
+          }
+          <span [appSpeakable]="'Botón. Reproducir'"></span>
+        </div>
+
+        <div class="cmp-btn-wrap">
+          <button type="button" class="btn" data-mm-role="cmp-pause"
+                  [class.hover-global]="ui.isHovering()" (click)="pauseBoth()">❚❚</button>
+          @if (voiceNav.enabled()) {
+            <span class="voz-pista voz-pista--debajo-fuera" aria-hidden="true">{{ pistaPause() }}</span>
+          }
+          <span [appSpeakable]="'Botón. Pausa'"></span>
+        </div>
+      </div>
+
+      <div class="cmp-slider-wrap cmp-slider-wrap--duracion">
+        <input type="range" class="progress cmp-slider-duracion"
+               data-mm-role="cmp-duracion"
+               [class.hover-global]="ui.isHovering()"
+               [class.cmp-slider-voz-activo]="isCmpSliderVozActivo('duracion')"
+               min="0" max="100"
+               [value]="progress()"
+               (input)="onProgressInput($event)">
+        @if (voiceNav.enabled()) {
+          <span class="voz-pista voz-pista--debajo-slider" aria-hidden="true">{{ pistaSlider('duracion') }}</span>
+        }
+      </div>
+
+      <div class="right-controls">
+        <div class="cmp-slider-wrap cmp-slider-wrap--vol">
+          <label class="small">Vol.</label>
+          <input type="range" data-mm-role="cmp-volumen"
+                 [class.hover-global]="ui.isHovering()"
+                 [class.cmp-slider-voz-activo]="isCmpSliderVozActivo('volumen')"
+                 min="0" max="1" step="0.01"
+                 [value]="volume()"
+                 (input)="onVolumeInput($event)">
+          @if (voiceNav.enabled()) {
+            <span class="voz-pista voz-pista--debajo-slider" aria-hidden="true">{{ pistaSlider('volumen') }}</span>
+          }
+          <span [appSpeakable]="'Slider. Volumen'"></span>
+        </div>
+
+        <div class="cmp-btn-wrap">
+          <button type="button" class="btn" data-mm-role="cmp-mute"
+                  [class.hover-global]="ui.isHovering()" (click)="toggleMute()">
+            {{ isMuted() ? '🔇' : '🔊' }}
+          </button>
+          @if (voiceNav.enabled()) {
+            <span class="voz-pista voz-pista--debajo-fuera" aria-hidden="true">{{ pistaMute() }}</span>
+          }
+          <span [appSpeakable]="'Botón. Volumen'"></span>
+        </div>
+
+        <div class="cmp-btn-wrap">
+          <button type="button" class="btn" data-mm-role="cmp-filtro"
+                  [class.hover-global]="ui.isHovering()" (click)="toggleBW()">
+            ⚪/⚫ {{ isForceBW() ? 'Quitar Filtro' : 'Forzar B/N' }}
+          </button>
+          @if (voiceNav.enabled()) {
+            <span class="voz-pista voz-pista--debajo-fuera" aria-hidden="true">{{ pistaFiltro() }}</span>
+          }
+          <span [appSpeakable]="'Botón. Quitar filtro'"></span>
+        </div>
+      </div>
+
+      <div class="meta small">
+        <span>{{ timeDisplay() }}</span>
+        <span [appSpeakable]="'Duración de las reproducciones'"></span>
+      </div>
+    </div>
+  </div>
+</div>

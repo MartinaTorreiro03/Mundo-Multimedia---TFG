@@ -1,0 +1,89 @@
+<div class="portada" data-surface="light" [class.hover-global]="ui.isHovering()">
+    <h1 [style.color]="ui.accentColor('h1', h1Colors)" appSpeakable>TEXTO</h1>
+    <img [src]="imagenPortada()" alt="Portada de la página de texto">
+</div>
+
+<section id="seccion1" data-surface="light" [class.hover-global]="ui.isHovering()">
+    <h2 [style.color]="ui.accentColor('h2')" appSpeakable>LA IMPORTANCIA DEL TEXTO</h2>
+
+    <h3 [style.color]="ui.accentColor('h3')" [class.hover-global]="ui.isHovering()" scrollReveal appSpeakable>Antes de imágenes, sonidos o videos, existía el texto. Escribir y leer fue nuestro primer gran invento para comunicar ideas, contar 
+        historias y compartir conocimientos.</h3>
+
+    <p [innerHTML]="texto('seccion1')" [style.color]="ui.accentColorParrafo()" scrollReveal appSpeakable></p>
+
+    <app-popup class="popup-dos-momentos" *ngIf="isDispositivoPopupOpen && dispositivoSeleccionado"
+               [title]="dispositivoSeleccionado.nombre + ' · ' + dispositivoSeleccionado.anio"
+               [theme]="carruselTheme()"
+               [size]="{ w: 720 }"
+               (closed)="cerrarDispositivo()">
+        <div class="dispositivo-popup">
+            <p class="dispositivo-popup-texto" appSpeakable>
+                {{ textoDispositivo(dispositivoSeleccionado.clave) }}
+            </p>
+        </div>
+    </app-popup>
+
+    <app-bloc-notas></app-bloc-notas>
+</section>
+
+<section id="seccion2" data-surface="light" [class.hover-global]="ui.isHovering()">
+    <h2 [style.color]="ui.accentColor('h2')" appSpeakable>DEL TEXTO ANALÓGICO A LA MULTIMEDIA</h2>
+    <button class="btn-carrusel" (click)="openCarouselPopup()" [class.hover-global]="ui.isHovering()">
+      @if (voiceNav.enabled()) {
+        <span class="voz-pista voz-pista--en-boton" aria-hidden="true">evolución</span>
+      }
+      Evolución de dispositivos del texto
+    </button>
+    <span [appSpeakable]="'Botón. Evolución de dispositivos del texto'"></span>
+    <app-popup *ngIf="isPopupOpen" [title]="'Dispositivos de texto'" [theme]="carruselTheme()" (closed)="closePopup()">
+        <app-carrusel-texto
+            [items]="carruselPopup"
+            [startIndex]="popupCarouselIndex"
+            (indexChange)="onPopupCarouselIndexChange($event)">
+        </app-carrusel-texto>
+    </app-popup>
+
+    <p [innerHTML]="texto('seccion2')" [style.color]="ui.accentColorParrafo()" scrollReveal appSpeakable></p>
+
+    <div class="ventanita" scrollReveal [class.hover-global]="ui.isHovering()">
+        <div class="ventanita-titulo">
+            <span class="ventanita-titulo-texto">Dos momentos del texto</span>
+            <span [appSpeakable]="'Ventana. Dispositivos del texto. Máquina de escribir mecánica y Kindle. Pulsa para saber más.'"></span>
+        </div>
+        <div class="ventanita-cuerpo">
+            @for (d of dispositivos; track d.clave) {
+                <div class="ventanita-item">
+                    <button type="button"
+                            class="ventanita-video-btn"
+                            [attr.aria-label]="'Abrir información sobre ' + d.nombre"
+                            [class.hover-global]="ui.isHovering()"
+                            (mouseenter)="onVideoHover($event, true)"
+                            (mouseleave)="onVideoHover($event, false)"
+                            (click)="abrirDispositivo(d)">
+                        <video [src]="d.video" autoplay loop muted playsinline>
+                        </video>
+                        <span class="ventanita-overlay" aria-hidden="true">Ver más</span>
+                    </button>
+                    <div class="ventanita-pie">
+                        <span class="ventanita-pie-nombre">{{ d.nombre }}</span>
+                        <span class="ventanita-pie-anio">{{ d.anio }}</span>
+                        <span class="ventanita-pie-lector"
+                              [appSpeakable]="'Botón. ' + d.nombre + ', ' + d.anio + '. Pulsa para ver más información.'">
+                        </span>
+                        @if (voiceNav.enabled() && pistaVozDispositivo(d.clave); as kw) {
+                          <span class="voz-pista voz-pista--debajo-control" aria-hidden="true">{{ kw }}</span>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="siguiente-wrap">
+      <button class="siguiente" (click)="siguientePagina()" [class.hover-global]="ui.isHovering()">Siguiente Página</button>
+      @if (voiceNav.enabled()) {
+        <span class="voz-pista voz-pista--debajo-control" aria-hidden="true">siguiente</span>
+      }
+    </div>
+    <span [appSpeakable]="'Botón. Siguiente página'"></span>
+</section>

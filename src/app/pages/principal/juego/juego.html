@@ -1,0 +1,134 @@
+<div
+  #gameContainer
+  class="game-container"
+  tabindex="0"
+  [attr.aria-label]="'Juego de clasificación. Usa flechas para navegar y Enter o espacio para coger y soltar fichas.'"
+>
+  <h3 appSpeakable>Arrastra cada dispositivo a su categoría</h3>
+
+  <div class="juego-unir">
+    
+    <div
+      class="columna columna-categorias"
+    >
+      <div
+        class="categoria"
+        *ngFor="let cat of categorias; trackBy: trackById"
+        tabindex="-1"
+        [class.kb-focus]="isFocusTarget('category', cat.id)"
+        [appSpeakable]="'Categoría: ' + cat.titulo"
+        [attr.data-tipo]="cat.id"
+        [class.drag-over]="cat.dragOver"
+        (dragover)="onDragOverCategoria(cat, $event)"
+        (dragleave)="onDragLeaveCategoria(cat)"
+        (drop)="dropOnCategoria(cat, $event)"
+      >
+        <div class="categoria-titulo">{{ cat.titulo }}</div>
+        @if (voiceNav.enabled()) {
+          <span class="voz-pista voz-pista--debajo-fuera" aria-hidden="true">{{ cat.id }}</span>
+        }
+
+        <div class="categoria-contenido">
+          <div
+            class="dispositivo pequeno"
+            *ngFor="let d of cat.dispositivos; trackBy: trackById"
+            [class.kb-focus]="isFocusTarget('categoryDevice', d.id)"
+            [class.kb-picked]="selectedDeviceId === d.id"
+            [appSpeakable]="d.label"
+            [attr.data-device-id]="d.id"
+            draggable="true"
+            (dragstart)="onDragStart(d.id)"
+            (dragend)="onDragEnd()"
+            [attr.data-tipo]="d.tipo"
+          >
+            <img [src]="d.img" [alt]="d.alt" />
+            <span>{{ d.label }}</span>
+            @if (voiceNav.enabled()) {
+              <span class="voz-pista voz-pista--debajo-fuera" aria-hidden="true">{{ deviceVoiceKeyword(d.id) }}</span>
+            }
+          </div>
+        </div>
+      </div>
+
+      
+      <div [appSpeakable]="'Botón comprobar respuestas'" [class.kb-focus]="isFocusTarget('comprobar')">
+        <button id="comprobar-unir" (click)="comprobar()">Comprobar</button>
+        @if (voiceNav.enabled()) {
+          <span class="voz-pista voz-pista--debajo-fuera" aria-hidden="true">comprobar</span>
+        }
+      </div>
+    </div>
+
+    
+    <div
+      class="columna columna-dispositivos"
+      (dragover)="onDragOverPool($event)"
+      (drop)="dropOnPool($event)"
+    >
+      <div
+        class="pool-drop-zone"
+        tabindex="-1"
+        [class.kb-focus]="isFocusTarget('poolZone')"
+        [class.kb-active]="selectedDeviceId !== null"
+        [appSpeakable]="'Área de devolución. Devuelve aquí un dispositivo para recolocarlo.'"
+      >
+        Devolver a dispositivos
+        @if (voiceNav.enabled()) {
+          <span class="voz-pista voz-pista--debajo-fuera" aria-hidden="true">devolver</span>
+        }
+      </div>
+
+      <div class="dispositivo-item" *ngFor="let d of dispositivos; trackBy: trackById">
+        <div
+          class="dispositivo"
+          [class.kb-focus]="isFocusTarget('poolDevice', d.id)"
+          [class.kb-picked]="selectedDeviceId === d.id"
+          [appSpeakable]="d.label"
+          [attr.data-device-id]="d.id"
+          tabindex="-1"
+          draggable="true"
+          (dragstart)="onDragStart(d.id)"
+          (dragend)="onDragEnd()"
+          [attr.data-tipo]="d.tipo"
+        >
+          <img [src]="d.img" [alt]="d.alt" />
+          <span>{{ d.label }}</span>
+          @if (voiceNav.enabled()) {
+            <span class="voz-pista voz-pista--debajo-fuera" aria-hidden="true">{{ deviceVoiceKeyword(d.id) }}</span>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="resultado-overlay" *ngIf="resultVisible" (click)="resultVisible = false">
+    <div
+      class="resultado-win95"
+      [class.fail]="resultKind === 'fail'"
+      [class.near]="resultKind === 'near'"
+      [class.win]="resultKind === 'win'"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="resultado-barra">
+        <span>Resultado</span>
+        <button class="resultado-close" type="button" [class.kb-focus]="isFocusTarget('resultClose')" (click)="resultVisible = false">✖</button>
+        @if (voiceNav.enabled()) {
+          <span class="voz-pista voz-pista--debajo-fuera" aria-hidden="true">cerrar</span>
+        }
+      </div>
+
+      <div class="resultado-body">
+        <div class="resultado-num"><h2>{{ aciertos }}/{{ total }}</h2></div>
+        <div class="resultado-titulo">{{ resultTitle }}</div>
+        <div class="resultado-sub">{{ resultSubtitle }}</div>
+
+        <div class="resultado-actions">
+          <button class="btn-win95" type="button" [class.kb-focus]="isFocusTarget('resultOk')" (click)="resultVisible = false">OK</button>
+          @if (voiceNav.enabled()) {
+            <span class="voz-pista voz-pista--debajo-fuera" aria-hidden="true">aceptar</span>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

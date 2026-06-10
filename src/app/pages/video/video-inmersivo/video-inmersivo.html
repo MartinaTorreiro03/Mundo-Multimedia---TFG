@@ -1,0 +1,31 @@
+<div class="escena-3d" role="group" aria-label="Video inmersivo. Usa los botones de flecha y mantén Enter para rotar">
+  <div class="controles-nav">
+    @for (f of flechasNav; track f.id) {
+      <div class="control-voz-wrap" [class]="'pos-' + f.css">
+        <button
+          type="button"
+          [class]="'nav-btn ' + f.css"
+          [attr.aria-label]="f.aria"
+          [class.hover-global]="ui.isHovering()"
+          (click)="rotar(f.rotX, f.rotY)"
+          (mousedown)="startRotation(f.holdX, f.holdY)"
+          (mouseup)="stopRotation()"
+          (mouseleave)="stopRotation()"
+          (keydown.enter)="onEnterDown($event, f.holdX, f.holdY)"
+          (keyup.enter)="stopRotation()"
+          (blur)="stopRotation()">{{ f.symbol }}</button>
+        @if (voiceNav.enabled()) {
+          <span class="voz-pista voz-pista--debajo-control" aria-hidden="true">{{ pistaFlecha(f.id) }}</span>
+        }
+      </div>
+    }
+  </div>
+
+  <div class="render-engine" [style.transform]="transformStyle()">
+    @for (face of [1,2,3,4,5,6]; track face) {
+      <div class="cara cara-{{face}}">
+        <video src="assets/videos/video/video360.mp4" autoplay loop muted playsinline></video>
+      </div>
+    }
+  </div>
+</div>

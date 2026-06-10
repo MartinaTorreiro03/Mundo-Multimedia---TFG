@@ -1,0 +1,22 @@
+@if (voice.enabled() && voice.active()) {
+  <aside
+    class="voice-transcript-panel"
+    role="region"
+    aria-label="Transcripción del reconocimiento de voz"
+    [attr.aria-live]="'polite'"
+    [attr.aria-relevant]="'additions text'"
+  >
+    <div class="voice-transcript-head">Voz (es-ES)</div>
+    <div class="voice-transcript-scroll" #scrollHost>
+      <div class="voice-transcript-body">
+        @if (voice.liveTranscript()) {
+          @for (seg of segments(); track $index) {
+            <span [class.voice-cmd]="seg.cmd">{{ seg.text }}</span>
+          }
+        } @else {
+          <span class="voice-transcript-muted">Escuchando…</span>
+        }
+      </div>
+    </div>
+  </aside>
+}

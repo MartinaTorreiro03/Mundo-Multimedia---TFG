@@ -1,0 +1,91 @@
+.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.barraLateral {
+  position: fixed;
+  left: 0;
+  top: 80px;
+  z-index: 1000;
+  padding-inline: clamp(12px, 2vw, 32px);
+
+  .menu-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    align-items: flex-start;
+    position: relative;
+    overflow: visible;
+  }
+
+  img {
+    width: clamp(40px, 4vw, 55px);
+    height: auto;
+    object-fit: contain;
+    cursor: pointer;
+    display: block;
+    pointer-events: auto;
+    transition: opacity 0.2s;
+
+    transform: scale(1);
+    transition: transform 0.3s ease-in-out;
+
+    &:hover {
+      transform: scale(1.2);
+    }
+
+    &.keyboard-selected {
+      transform: scale(1.2);
+    }
+  }
+
+  .voz-pista-col--info {
+    align-items: flex-start;
+  }
+
+  .lateral-info-btn {
+    align-items: flex-start;
+  }
+
+  .lateral-option-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+
+    > span > button.speak-btn {
+      min-height: 0;
+      min-width: 0;
+      height: 24px;
+      padding: 3px 5px;
+      font-size: 12px;
+      line-height: 1;
+      margin-left: 0;
+
+      .speak-btn-label {
+        display: none;
+      }
+    }
+  }
+
+  .voz-pista--menu-corner-lateral {
+    top: 0;
+    bottom: auto;
+    left: 0;
+    right: auto;
+    transform: translateY(calc(-100% - 10px));
+  }
+
+  .voz-pista--lateral {
+    position: absolute;
+    left: 0;
+    right: auto;
+    top: 100%;
+    bottom: auto;
+    transform: none;
+    margin-top: 10px;
+    z-index: 2;
+  }
+}

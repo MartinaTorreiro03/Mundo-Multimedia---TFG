@@ -1,0 +1,75 @@
+<div class="portada" data-surface="dark" [class.hover-global]="ui.isHovering()">
+    <h1 [style.color]="ui.accentColor('h1', h1Colors)" appSpeakable>INTERACTIVIDAD</h1>
+    <img [src]="imagenPortada()" alt="Portada de la página de interactividad">
+</div>
+
+<section id="seccion1" data-surface="light" [class.hover-global]="ui.isHovering()">
+    <h2 [style.color]="ui.accentColor('h2')" appSpeakable>LOS ORÍGENES DE LA INTERACTIVIDAD</h2>
+    <h3 [style.color]="ui.accentColor('h3')" [class.hover-global]="ui.isHovering()" scrollReveal appSpeakable>
+        Antes de los smartphones, las apps y la realidad virtual, hubo máquinas que respondían a nuestras órdenes. Así comenzó la interactividad.</h3>
+    <app-historia-interactiva></app-historia-interactiva>
+    <p [innerText]="texto('seccion1')" [style.color]="ui.accentColorParrafo()" scrollReveal appSpeakable></p>
+</section>
+
+<section id="seccion2" data-surface="light" [class.hover-global]="ui.isHovering()">
+    <h2 [style.color]="ui.accentColor('h2')" appSpeakable>DE CLICS A MUNDOS VIRTUALES</h2>
+    <h3 [style.color]="ui.accentColor('h3')" [class.hover-global]="ui.isHovering()" scrollReveal appSpeakable>
+        Del ratón y el teclado pasamos a pantallas táctiles, mandos, sensores de movimiento y realidad virtual. Cada nueva interfaz nos hizo sentir más dentro de la experiencia.</h3>
+    <p [innerText]="texto('seccion2')" [style.color]="ui.accentColorParrafo()" scrollReveal appSpeakable></p>
+    <app-evolucion-interfaces></app-evolucion-interfaces>
+</section>
+
+<section id="seccion3" data-surface="light" [class.hover-global]="ui.isHovering()">
+    <h2 [style.color]="ui.accentColor('h2')" scrollReveal appSpeakable>LA INTERACTIVIDAD EN LA MULTIMEDIA ACTUAL</h2>
+    <h3 [style.color]="ui.accentColor('h3')" [class.hover-global]="ui.isHovering()" scrollReveal appSpeakable>
+        Hoy la interactividad está en todas partes: desde videojuegos y apps hasta redes sociales, cine interactivo o realidad aumentada.</h3>
+    <p [innerText]="texto('seccion3')" [style.color]="ui.accentColorParrafo()" scrollReveal appSpeakable></p>
+    <app-multimedia></app-multimedia>
+
+    <div class="seccion3-cierre">
+        <div class="ventanita" scrollReveal [class.hover-global]="ui.isHovering()" [class.interactividad-ventanita-voz-activa]="ventanitaVozActiva()">
+            <div class="ventanita-titulo">
+                <span class="ventanita-titulo-texto">Dos momentos de la interactividad</span>
+                <span [appSpeakable]="'Ventana. Dos momentos de la interactividad: Commodore 64 y PlayStation 5. Pulsa cada vídeo para leer más.'"></span>
+            </div>
+            <div class="ventanita-cuerpo">
+                @for (d of dispositivos; track d.clave) {
+                    <div class="ventanita-item" [class.ventanita-item--ordenador]="d.clave === 'ordenador'" [class.ventanita-item--ps5]="d.clave === 'ps5'">
+                        <button type="button"
+                                class="ventanita-video-btn"
+                                [attr.aria-label]="'Abrir información sobre ' + d.nombre"
+                                [class.hover-global]="ui.isHovering()"
+                                (mouseenter)="onVideoHover($event, true)"
+                                (mouseleave)="onVideoHover($event, false)"
+                                (click)="abrirDispositivo(d)">
+                            <video [src]="d.video" autoplay loop muted playsinline></video>
+                            <span class="ventanita-overlay" aria-hidden="true">Ver más</span>
+                        </button>
+                        <div class="ventanita-pie">
+                            <span class="ventanita-pie-nombre">{{ d.nombre }}</span>
+                            <span class="ventanita-pie-anio">{{ d.anio }}</span>
+                            <span class="ventanita-pie-lector"
+                                  [appSpeakable]="'Botón. ' + d.nombre + ', ' + d.anio + '. Pulsa para ver más información.'">
+                            </span>
+                            @if (voiceNav.enabled()) {
+                              <span class="voz-pista voz-pista--debajo-control" aria-hidden="true">{{ pistaVozDispositivo(d.clave) }}</span>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <app-popup class="popup-dos-momentos" *ngIf="isDispositivoPopupOpen && dispositivoSeleccionado"
+               [title]="dispositivoSeleccionado.nombre + ' · ' + dispositivoSeleccionado.anio"
+               [theme]="interactividadTheme()"
+               [size]="{ w: 720 }"
+               (closed)="cerrarDispositivo()">
+        <div class="dispositivo-popup">
+            <p class="dispositivo-popup-texto" appSpeakable>
+                {{ textoDispositivo(dispositivoSeleccionado.clave) }}
+            </p>
+        </div>
+    </app-popup>
+</section>

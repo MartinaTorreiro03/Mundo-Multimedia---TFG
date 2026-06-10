@@ -1,0 +1,34 @@
+<header
+  [class.hidden]="!visible()"
+  [style.color]="uiState.accentColor('menus')"
+  (mouseenter)="onEnter()"
+  (mouseleave)="onLeave()"
+  appContrasteIconos
+  (surfaceChange)="onSurfaceChange($event)"
+>
+  <nav
+    class="menuWrap"
+    [class.visible]="isVisible() || keyboardMenuOpen()"
+  >
+    @if (voiceMenuSalirHint()) {
+      <span class="voz-pista voz-pista--menu-corner" aria-hidden="true">salir</span>
+    }
+    <ul>
+      @for (item of menuItems(); track item.route) {
+        <li [routerLink]="item.route" [attr.data-voice-route]="item.route || '/'" [appSpeakable]="item.label">
+          @if (voiceHints()) {
+            <span class="voz-pista">{{ navVoiceHint(item) }}</span>
+          }
+          <span class="nav-item-label">{{ item.label }}</span>
+        </li>
+      }
+    </ul>
+  </nav>
+
+  <div class="menu-icon-wrap">
+    @if (voiceIconHint()) {
+      <span class="voz-pista voz-pista--icono-below">navegación</span>
+    }
+    <img [src]="iconoMenu" alt="Icono de menú de navegación">
+  </div>
+</header>

@@ -1,0 +1,666 @@
+<section
+  class="mm-shell"
+  tabindex="0"
+  data-mu-role="root"
+  aria-label="Multimedia. Pulsa Enter para entrar y espacio para salir."
+  [class.hover-global]="ui.isHovering()">
+
+  
+
+  <nav class="mm-tabs" role="tablist">
+
+    @for (tab of tabs; track tab.id) {
+
+      <div class="mm-tab-cell">
+
+        <button
+
+          role="tab"
+
+          data-mu-role="tab"
+
+          [attr.data-mu-tab-id]="tab.id"
+
+          [class.hover-global]="ui.isHovering()"
+
+          [class.active]="activeTab() === tab.id"
+
+          [attr.aria-selected]="activeTab() === tab.id"
+
+          [attr.aria-label]="'Pestaña ' + tab.label"
+
+          (click)="setTab(tab.id)">
+
+          <span class="tab-icon" aria-hidden="true">{{ tab.icon }}</span>
+
+          <span class="tab-label">{{ tab.label }}</span>
+
+          @if (voiceNav.enabled()) {
+
+            <span class="voz-pista voz-pista--en-tab" aria-hidden="true">{{ tabVoiceHint(tab.id) }}</span>
+
+          }
+
+        </button>
+
+        <span [appSpeakable]="'Pestaña. ' + tab.label + '.'"></span>
+
+      </div>
+
+    }
+
+  </nav>
+
+  
+
+  @if (activeTab() === 'canvas') {
+
+    <div class="tab-panel" role="tabpanel">
+
+      <div class="canvas-toolbar">
+
+        <div class="tool-group">
+
+          @for (mode of brushModes; track mode.id) {
+
+            <div class="mm-voice-tool-cell">
+
+              <button class="tool-btn"
+
+                      data-mu-role="tool"
+
+                      data-mu-tool-kind="mode"
+
+                      [class.hover-global]="ui.isHovering()"
+
+                      [class.active]="brushMode() === mode.id"
+
+                      [attr.aria-label]="'Modo de pincel ' + mode.label"
+
+                      (click)="brushMode.set(mode.id)">
+
+                {{ mode.label }}
+
+              </button>
+
+              @if (voiceNav.enabled()) {
+
+                <span class="voz-pista voz-pista--debajo-fuera" aria-hidden="true">{{ brushModeVoiceHint(mode.id) }}</span>
+
+              }
+
+              <span [appSpeakable]="'Botón. Modo ' + mode.label + '.'"></span>
+
+            </div>
+
+          }
+
+        </div>
+
+        <div class="color-palette" aria-label="Seleccionar color">
+
+          @for (c of brushColors(); track c.color; let i = $index) {
+
+            <div class="mm-color-voice-cell">
+
+              <button
+
+                class="color-swatch"
+
+                data-mu-role="tool"
+
+                data-mu-tool-kind="color"
+
+                [class.hover-global]="ui.isHovering()"
+
+                [class.active]="selectedColorIdx() === i"
+
+                [style.background]="c.color"
+
+                [attr.title]="c.label"
+
+                [attr.aria-label]="'Color ' + c.label"
+
+                (click)="selectedColorIdx.set(i)">
+
+              </button>
+
+              @if (voiceNav.enabled()) {
+
+                <span class="voz-pista voz-pista--debajo-fuera mm-voz-color-num" aria-hidden="true">{{ i + 1 }}</span>
+
+              }
+
+            </div>
+
+          }
+
+        </div>
+
+        <div class="mm-size-voice-row">
+
+          <div class="mm-slider-voice-cell">
+
+            <label class="slider-row" [class.hover-global]="ui.isHovering()">
+
+              <span>tamaño</span>
+
+              <input type="range" min="5" max="50"
+
+                     data-mu-role="tool"
+
+                     data-mu-tool-kind="size"
+
+                     aria-label="Tamaño del pincel"
+
+                     [ngModel]="brushSize()"
+
+                     (ngModelChange)="brushSize.set($event)" />
+
+              <span class="val">{{ brushSize() }}</span>
+
+            </label>
+
+            @if (voiceNav.enabled()) {
+
+              <span class="voz-pista voz-pista--debajo-fuera mm-voz-size-keyword" aria-hidden="true">tamaño</span>
+
+            }
+
+          </div>
+
+          <div class="mm-speak-cell">
+
+            <span [appSpeakable]="'Slider. Tamaño del pincel, entre 5 y 50. Valor ' + brushSize() + '.'"></span>
+
+          </div>
+
+          @if (voiceNav.enabled()) {
+
+            <aside class="mm-voz-size-aside" aria-hidden="true">
+
+              <p>Di <strong>«1 más»</strong>, <strong>«5 menos»</strong>, <strong>«10 más»</strong>…</p>
+
+            </aside>
+
+          }
+
+        </div>
+
+        <div class="mm-voice-tool-cell mm-clear-cell">
+
+          <button class="clear-btn"
+
+                  data-mu-role="tool"
+
+                  data-mu-tool-kind="clear"
+
+                  [class.hover-global]="ui.isHovering()"
+
+                  aria-label="Limpiar el lienzo"
+
+                  (click)="clearCanvas()">limpiar</button>
+
+          @if (voiceNav.enabled()) {
+
+            <span class="voz-pista voz-pista--debajo-fuera" aria-hidden="true">limpiar</span>
+
+          }
+
+          <span [appSpeakable]="'Botón. Limpiar el lienzo.'"></span>
+
+        </div>
+
+      </div>
+
+      <div class="mm-canvas-voice-block">
+
+        <div class="mm-canvas-voice-frame" [class.mm-canvas-voice-frame--activo]="voicePaintMode()">
+
+          @if (voiceNav.enabled()) {
+
+            <span class="mm-voz-dir mm-voz-dir--izq" [class.activa]="direccionPinturaVoz() === 1">1</span>
+
+            <span class="mm-voz-dir mm-voz-dir--arr" [class.activa]="direccionPinturaVoz() === 2">2</span>
+
+            <span class="mm-voz-dir mm-voz-dir--der" [class.activa]="direccionPinturaVoz() === 3">3</span>
+
+            <span class="mm-voz-dir mm-voz-dir--abj" [class.activa]="direccionPinturaVoz() === 4">4</span>
+
+          }
+
+          <div class="canvas-wrap"
+
+               #canvasWrap
+
+               tabindex="0"
+
+               role="application"
+
+               data-mu-role="canvas-wrap"
+
+               [class.mm-canvas-pintura-voz]="voicePaintMode()"
+
+               [attr.aria-label]="voiceNav.enabled()
+
+                 ? (voicePaintMode()
+
+                   ? 'Modo pintura activo. Di 1 2 3 4 o uno dos tres cuatro para pintar. Di salir para terminar.'
+
+                   : 'Lienzo. Di dibujar o pintar para empezar; luego 1 2 3 4 para pintar en cada dirección.')
+
+                 : 'Lienzo. Arrastra el ratón para pintar o mueve con las flechas del teclado. Pulsa Enter para salir.'"
+
+               [class.hover-global]="ui.isHovering()">
+
+            <canvas #canvasEl
+
+              (mousedown)="startDraw($event)"
+
+              (mousemove)="onCanvasMouseMove($event)"
+
+              (mouseup)="stopDraw()"
+
+              (mouseleave)="stopDraw()"
+
+              (touchstart)="startDrawTouch($event)"
+
+              (touchmove)="onCanvasTouchMove($event)"
+
+              (touchend)="stopDraw()">
+
+            </canvas>
+
+          </div>
+
+        </div>
+
+        @if (voiceNav.enabled()) {
+
+          <p class="mm-voz-dibujar-hint">
+
+            @if (voicePaintMode()) {
+
+              <span class="voz-pista" aria-hidden="true">salir</span>
+
+              <span class="mm-voz-dibujar-extra">Pintar: <strong>1–4</strong> · Color: <strong>color 1</strong> … <strong>color 8</strong> (también 5–8)</span>
+
+            } @else {
+
+              <span class="voz-pista" aria-hidden="true">dibujar</span>
+
+              <span class="mm-voz-dibujar-extra">Colores <strong>1–8</strong> · luego «dibujar» y <strong>1–4</strong> para pintar</span>
+
+            }
+
+          </p>
+
+        }
+
+      </div>
+
+    </div>
+
+  }
+
+  
+
+  @if (activeTab() === 'audio') {
+
+    <div class="tab-panel audio-panel" role="tabpanel">
+
+      <div class="audio-section">
+
+        <div class="mm-section-head-row">
+
+          <h3 class="section-title">Análisis de micrófono</h3>
+
+          <span [appSpeakable]="'Análisis de micrófono.'"></span>
+
+        </div>
+
+        <div class="mic-row">
+
+          <div class="mm-voice-tool-cell mm-mic-cell">
+
+            <button class="mic-btn"
+
+                    data-mu-role="audio"
+
+                    [class.hover-global]="ui.isHovering()"
+
+                    [class.listening]="isListening()"
+
+                    [attr.aria-label]="isListening() ? 'Detener escucha del micrófono' : 'Activar el micrófono'"
+
+                    (click)="toggleMic()">
+
+              <span class="mic-icon" aria-hidden="true">{{ isListening() ? '■' : '◎' }}</span>
+
+              {{ isListening() ? 'Detener' : 'Activar micro' }}
+
+            </button>
+
+            @if (voiceNav.enabled()) {
+
+              <span class="voz-pista voz-pista--debajo-fuera" aria-hidden="true">micro</span>
+
+            }
+
+            <span [appSpeakable]="'Botón. ' + (isListening() ? 'Detener micrófono.' : 'Activar micrófono.')"></span>
+
+          </div>
+
+          @if (isListening()) {
+
+            <div class="mic-stats">
+
+              <span class="stat">
+
+                <span class="stat-label">volumen</span>
+
+                <span class="stat-val">{{ volume() }}%</span>
+
+                <span [appSpeakable]="'Volumen del micrófono ' + volume() + ' por ciento.'"></span>
+
+              </span>
+
+              <span class="stat">
+
+                <span class="stat-label">frec.</span>
+
+                <span class="stat-val">{{ dominantHz() }} Hz</span>
+
+                <span [appSpeakable]="'Frecuencia dominante ' + dominantHz() + ' hercios.'"></span>
+
+              </span>
+
+              <span class="stat">
+
+                <span class="stat-label">nota</span>
+
+                <span class="stat-val">{{ dominantNote() }}</span>
+
+                <span [appSpeakable]="'Nota dominante ' + dominantNote() + '.'"></span>
+
+              </span>
+
+            </div>
+
+          }
+
+        </div>
+
+        @if (audioError()) {
+
+          <p class="error-msg" appSpeakable>{{ audioError() }}</p>
+
+        }
+
+        <div class="freq-bars" aria-hidden="true">
+
+          @for (bar of freqBars(); track $index) {
+
+            <div class="freq-bar"
+
+                 [style.height.%]="bar * 100"
+
+                 [style.background]="'hsl(' + ($index * 11) + ',80%,60%)'">
+
+            </div>
+
+          }
+
+        </div>
+
+      </div>
+
+      <div class="audio-section">
+
+        <div class="mm-section-head-row">
+
+          <h3 class="section-title">Mini sintetizador</h3>
+
+          <span [appSpeakable]="'Mini sintetizador.'"></span>
+
+        </div>
+
+        @if (keyboardNav.enabled()) {
+          <p class="teclado-pista-multimedia-audio" aria-live="polite">
+            En cada nota del mini sintetizador, mantén <strong>Enter</strong> presionado para que suene
+            durante todo el tiempo que quieras.
+          </p>
+        }
+
+        <div class="synth-keys">
+
+          @for (note of synthNotes; track note.hz; let i = $index) {
+
+            <div class="mm-voice-tool-cell mm-key-cell">
+
+              <button class="key"
+
+                      data-mu-role="audio"
+
+                      [attr.data-mu-note-idx]="i"
+
+                      [attr.aria-label]="'Nota ' + note.label"
+
+                      [class.hover-global]="ui.isHovering()"
+
+                      [class.active]="activeNote() === i"
+
+                      (mousedown)="playNote(note.hz, i)"
+
+                      (mouseup)="stopNote()"
+
+                      (mouseleave)="stopNote()"
+
+                      (touchstart)="playNote(note.hz, i)"
+
+                      (touchend)="stopNote()"
+
+                      (keydown.enter)="onKeyNoteDown(note.hz, i, $event)"
+
+                      (keyup.enter)="onKeyNoteUp($event)"
+
+                      (keydown.space)="onKeyNoteDown(note.hz, i, $event)"
+
+                      (keyup.space)="onKeyNoteUp($event)">
+
+                <span class="key-label">{{ note.label }}</span>
+
+                <span class="key-hz">{{ note.hz | number:'1.0-0' }} Hz</span>
+
+              </button>
+
+              @if (voiceNav.enabled()) {
+
+                <span class="voz-pista voz-pista--debajo-fuera" aria-hidden="true">{{ noteVoiceHint(i) }}</span>
+
+              }
+
+              <span [appSpeakable]="'Botón. Nota ' + note.label + '.'"></span>
+
+            </div>
+
+          }
+
+        </div>
+
+      </div>
+
+    </div>
+
+  }
+
+  
+
+  @if (activeTab() === 'data') {
+
+    <div class="tab-panel data-panel" role="tabpanel">
+
+      <div class="data-header">
+
+        <div class="mm-section-head-row">
+
+          <h3 class="section-title">Tiempo en España · Open-Meteo API</h3>
+
+          <span [appSpeakable]="'Tiempo en España. Datos de la API Open-Meteo.'"></span>
+
+        </div>
+
+        <div class="mm-voice-tool-cell mm-refresh-cell">
+
+          <button class="refresh-btn"
+
+                  data-mu-role="data"
+
+                  [class.hover-global]="ui.isHovering()"
+
+                  [attr.aria-label]="weatherLoad() ? 'Cargando datos meteorológicos' : 'Actualizar datos meteorológicos'"
+
+                  (click)="loadWeather()"
+
+                  [disabled]="weatherLoad()">
+
+            {{ weatherLoad() ? 'Cargando…' : '↻ Actualizar' }}
+
+          </button>
+
+          @if (voiceNav.enabled()) {
+
+            <span class="voz-pista voz-pista--debajo-fuera" aria-hidden="true">actualizar</span>
+
+          }
+
+          <span [appSpeakable]="'Botón. ' + (weatherLoad() ? 'Cargando datos.' : 'Actualizar datos.')"></span>
+
+        </div>
+
+      </div>
+
+      @if (weatherError()) {
+
+        <p class="error-msg" appSpeakable>{{ weatherError() }}</p>
+
+      }
+
+      <div class="city-grid">
+
+        @for (city of weatherData(); track city.city) {
+
+          <div class="mm-voice-tool-cell mm-city-cell">
+
+            <button class="city-card"
+
+                    data-mu-role="data"
+
+                    [class.hover-global]="ui.isHovering()"
+
+                    [class.selected]="selectedCity()?.city === city.city"
+
+                    [attr.aria-label]="'Ciudad ' + city.city + '. Temperatura ' + city.temp + ' grados. Humedad ' + city.humidity + ' por ciento.'"
+
+                    (click)="selectCity(city)">
+
+              <span class="city-icon" aria-hidden="true">{{ city.icon }}</span>
+
+              <span class="city-name">{{ city.city }}</span>
+
+              <span class="city-temp" [style.color]="city.color">{{ city.temp }}°C</span>
+
+              <span class="city-hum">💧 {{ city.humidity }}%</span>
+
+            </button>
+
+            @if (voiceNav.enabled()) {
+
+              <span class="voz-pista voz-pista--debajo-fuera" aria-hidden="true">{{ cityVoiceHint(city.city) }}</span>
+
+            }
+
+            <span [appSpeakable]="'Botón. ' + city.city + '. ' + city.temp + ' grados, humedad ' + city.humidity + ' por ciento.'"></span>
+
+          </div>
+
+        }
+
+        @if (weatherLoad()) {
+
+          @for (n of [1,2,3,4,5,6]; track n) {
+
+            <div class="city-card skeleton" aria-hidden="true"></div>
+
+          }
+
+        }
+
+      </div>
+
+      @if (weatherData().length) {
+
+        <div class="bar-chart" aria-label="Gráfico de temperaturas">
+
+          @for (city of weatherData(); track city.city) {
+
+            <div class="bar-row">
+
+              <span class="bar-city">{{ city.city }}</span>
+
+              <div class="bar-track" aria-hidden="true">
+
+                <div class="bar-fill"
+
+                     [style.width.%]="(city.temp / maxTemp()) * 100"
+
+                     [style.background]="city.color">
+
+                </div>
+
+              </div>
+
+              <span class="bar-temp" [style.color]="city.color">{{ city.temp }}°</span>
+
+              <span [appSpeakable]="city.city + ', ' + city.temp + ' grados.'"></span>
+
+            </div>
+
+          }
+
+        </div>
+
+      }
+
+      @if (selectedCity(); as c) {
+
+        <div class="city-detail">
+
+          <span class="detail-icon" aria-hidden="true">{{ c.icon }}</span>
+
+          <div class="detail-info">
+
+            <span class="detail-city">{{ c.city }}</span>
+
+            <span class="detail-stats">
+
+              Temperatura: <strong [style.color]="c.color">{{ c.temp }}°C</strong>
+
+              &nbsp;·&nbsp; Humedad: <strong>{{ c.humidity }}%</strong>
+
+            </span>
+
+          </div>
+
+          <span [appSpeakable]="'Detalle de ' + c.city + '. Temperatura ' + c.temp + ' grados, humedad ' + c.humidity + ' por ciento.'"></span>
+
+        </div>
+
+      }
+
+    </div>
+
+  }
+
+</section>
+

@@ -1,0 +1,526 @@
+
+
+$teal-bright:      #00cea8;
+$teal-dark:        #008c72;
+$win-bg:           #ced4da;
+$win-border-light: #ffffff;
+$win-border-dark:  #808080;
+$win-border-black: #000000;
+$win-terminal:     #00ff00;
+
+.evolucion-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px 10px;
+  background: #fff;
+  color: $win-border-black;
+
+  .timeline-container {
+    width: 100%;
+    max-width: 850px;
+    margin-bottom: 15px;
+
+    .timeline {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      flex-wrap: wrap;
+
+      .ei-epoca-cell {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 3px;
+        min-width: 0;
+
+        > span:empty {
+          display: none;
+        }
+
+        > span {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        > span > button.speak-btn {
+          min-height: 0;
+          min-width: 0;
+          padding: 2px 5px;
+          font-size: 11px;
+          margin-left: 0;
+          line-height: 1;
+
+          .speak-btn-label {
+            display: none;
+          }
+        }
+      }
+
+      .epoca-btn {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 12px;
+        background: $win-bg;
+        border: 2px solid;
+        border-color: $win-border-light $win-border-dark $win-border-dark $win-border-light;
+        box-shadow: inset -1px -1px 0 $win-border-black, inset 1px 1px 0 $win-border-light;
+        cursor: pointer;
+        font-size: 0.75rem;
+        font-weight: bold;
+        width: 100%;
+
+        .icon { font-size: 1.1rem; }
+        .nombre { min-width: auto; text-align: left; }
+
+        &:hover { background: #e0e0e0; }
+
+        &.activa {
+          background: $teal-bright;
+          color: white;
+          border-color: $teal-dark $win-border-light $win-border-light $teal-dark;
+          box-shadow: inset 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        &.pulsado-voz {
+          border-color: $win-border-dark $win-border-light $win-border-light $win-border-dark;
+          box-shadow: inset 2px 2px 0 $win-border-black, inset -1px -1px 0 $win-border-light;
+          transform: translate(1px, 1px);
+        }
+
+        &.activa.pulsado-voz {
+          background: $teal-dark;
+          border-color: #004d3d $teal-bright $teal-bright #004d3d;
+        }
+      }
+    }
+  }
+
+  .canvas-container {
+    position: relative;
+    width: 100%;
+    max-width: 850px;
+    margin-bottom: 15px;
+    background: #000;
+    border: 3px solid $teal-dark;
+    box-shadow: 0 4px 10px rgba(0, 206, 168, 0.2);
+    outline: none;
+
+    &:focus-visible {
+      outline: 3px solid $teal-bright;
+      outline-offset: 2px;
+    }
+
+    .ei-zonas-voz {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .ei-zona-voz {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 2rem;
+      min-height: 2rem;
+      padding: 0.2rem 0.45rem;
+      font-size: 1.15rem;
+      font-weight: 800;
+      line-height: 1;
+      color: #003d32;
+      background: rgba(0, 206, 168, 0.92);
+      border: 2px solid #008c72;
+      box-shadow: 0 0 0 1px #fff inset, 0 2px 6px rgba(0, 0, 0, 0.35);
+      border-radius: 4px;
+
+      &.activa {
+        background: #fff;
+        color: #008c72;
+        outline: 3px solid $teal-bright;
+        outline-offset: 2px;
+      }
+
+      &--izq {
+        left: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+
+      &--arr {
+        top: 8px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      &--der {
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+
+      &--abj {
+        bottom: 8px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+    }
+
+    .matriz-canvas {
+      display: block;
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 280px;
+      cursor: crosshair;
+      background: #000;
+    }
+
+    .overlay-info {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+
+      .info-box {
+        background: rgba(0, 0, 0, 0.85);
+        border: 1px solid $teal-bright;
+        padding: 8px 12px;
+        color: $win-terminal;
+        font-family: 'Courier New', monospace;
+        font-size: 0.75rem;
+        max-width: 160px;
+
+        strong {
+          color: $teal-bright;
+          font-size: 0.8rem;
+        }
+
+        .ei-overlay-line {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          flex-wrap: wrap;
+
+          > span:empty {
+            display: none;
+          }
+
+          > span > button.speak-btn {
+            min-height: 0;
+            min-width: 0;
+            padding: 2px 4px;
+            font-size: 10px;
+            margin-left: 0;
+            line-height: 1;
+
+            .speak-btn-label {
+              display: none;
+            }
+          }
+        }
+
+        .ei-overlay-line--desc {
+          margin-top: 4px;
+
+          p {
+            margin: 0;
+            flex: 1;
+            min-width: 0;
+            line-height: 1.2;
+            text-align: justify;
+          }
+        }
+      }
+    }
+  }
+
+  .descripcion-epocas {
+    width: 100%;
+    max-width: 850px;
+    margin-bottom: 15px;
+
+    .desc-item {
+      background: $win-bg;
+      padding: 12px 15px;
+      border: 2px solid;
+      border-color: $win-border-light $win-border-dark $win-border-dark $win-border-light;
+
+      h3 {
+        margin: 0 0 5px 0;
+        color: $teal-dark;
+        font-size: 1.1rem;
+      }
+
+      .ei-desc-head {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-bottom: 5px;
+
+        > h3 {
+          margin: 0;
+          flex: 1;
+          min-width: 0;
+        }
+
+        > span:empty {
+          display: none;
+        }
+
+        > span > button.speak-btn {
+          min-height: 0;
+          min-width: 0;
+          padding: 2px 5px;
+          font-size: 12px;
+          margin-left: 0;
+          line-height: 1;
+
+          .speak-btn-label {
+            display: none;
+          }
+        }
+      }
+
+      p {
+        margin: 0;
+        font-size: 0.85rem;
+        line-height: 1.4;
+        text-align: justify;
+
+        > button.speak-btn {
+          min-height: 0;
+          min-width: 0;
+          padding: 2px 5px;
+          font-size: 12px;
+          margin-left: 4px;
+          vertical-align: middle;
+          line-height: 1;
+
+          .speak-btn-label {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+
+  .instrucciones {
+    width: 100%;
+    max-width: 850px;
+    padding: 8px;
+    background: $teal-dark;
+    border: 2px solid;
+    border-color: $win-border-light $win-border-dark $win-border-dark $win-border-light;
+    color: white;
+    font-size: 0.8rem;
+
+    p {
+      margin: 0;
+      text-align: justify;
+
+      > button.speak-btn {
+        min-height: 0;
+        min-width: 0;
+        width: 24px;
+        height: 24px;
+        padding: 3px 5px;
+        font-size: 12px;
+        margin: 6px auto 0;
+        display: block;
+        line-height: 1;
+
+        .speak-btn-label {
+          display: none;
+        }
+      }
+    }
+  }
+}
+
+:host-context(#seccion2.hover-global) .evolucion-wrapper {
+  background: #000000;
+  color: #f2f2f2;
+
+  .timeline-container .timeline .epoca-btn {
+    background: #5c5c5c;
+    color: #e6e6e6;
+    border-color: #8a8a8a #191919 #191919 #8a8a8a;
+    box-shadow: inset -1px -1px 0 #101010, inset 1px 1px 0 #6b6b6b;
+
+    &:hover { background: #666; }
+
+    &.activa {
+      background: #2f2f2f;
+      color: #fff;
+      border-color: #121212 #9a9a9a #9a9a9a #121212;
+      box-shadow: inset 1px 1px 2px rgba(0,0,0,0.45);
+    }
+  }
+
+  .canvas-container {
+    border-color: #3f3f3f;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.35);
+
+    .overlay-info .info-box {
+      background: rgba(18,18,18,0.92);
+      border-color: #565656;
+      color: #d7d7d7;
+
+      strong { color: #f0f0f0; }
+    }
+  }
+
+  .descripcion-epocas .desc-item {
+    background: #d1d1d1;
+    border-color: #f4f4f4 #5f5f5f #5f5f5f #f4f4f4;
+
+    h3 { color: #2d2d2d; }
+    p { color: #121212; }
+  }
+
+  .instrucciones {
+    background: #5a5a5a;
+    border-color: #d7d7d7 #262626 #262626 #d7d7d7;
+    color: #f2f2f2;
+  }
+}
+
+.timeline-container.hover-global {
+  .timeline .epoca-btn.hover-global {
+    background: #5c5c5c;
+    color: #e6e6e6;
+    border-color: #8a8a8a #191919 #191919 #8a8a8a;
+    box-shadow: inset -1px -1px 0 #101010, inset 1px 1px 0 #6b6b6b;
+
+    &:hover { background: #666; }
+
+    &.activa {
+      background: #2f2f2f;
+      color: #fff;
+      border-color: #121212 #9a9a9a #9a9a9a #121212;
+      box-shadow: inset 1px 1px 2px rgba(0,0,0,0.45);
+    }
+  }
+}
+
+.overlay-info .info-box.hover-global {
+  background: rgba(18,18,18,0.92);
+  border-color: #565656;
+  color: #d7d7d7;
+
+  strong { color: #f0f0f0; }
+}
+
+.descripcion-epocas.hover-global .desc-item {
+  background: #d1d1d1;
+  border-color: #f4f4f4 #5f5f5f #5f5f5f #f4f4f4;
+
+  h3 { color: #2d2d2d; }
+  p { color: #121212; }
+}
+
+.instrucciones.hover-global {
+  background: #5a5a5a;
+  border-color: #d7d7d7 #262626 #262626 #d7d7d7;
+  color: #f2f2f2;
+}
+
+@media (max-width: 768px) {
+  .evolucion-wrapper {
+    padding: 15px clamp(16px, 6vw, 32px);
+
+    .titulo-seccion h1 { font-size: 1.4rem; }
+    .canvas-container .matriz-canvas { height: 200px; }
+    .timeline-container .timeline .epoca-btn {
+      padding: 4px 8px;
+      .nombre { display: none; }
+    }
+  }
+}
+
+:host-context(.tema-daltonismo1) .evolucion-wrapper {
+  .timeline-container .timeline .epoca-btn {
+    background: #ffb000;
+    color: #000;
+    border-color: #ffffff #906200 #906200 #ffffff;
+    box-shadow: inset -1px -1px 0 #906200, inset 1px 1px 0 #fff;
+
+    &:hover { background: #ffd27a; }
+
+    &.activa {
+      background: #fe6100;
+      color: #fff;
+      border-color: #906200 #ffffff #ffffff #906200;
+    }
+  }
+
+  .canvas-container {
+    border-color: #906200;
+    box-shadow: 0 4px 10px rgba(254, 97, 0, 0.2);
+
+    .overlay-info .info-box {
+      border-color: #ffb000;
+      color: #ffe9c0;
+      strong { color: #ffb000; }
+    }
+  }
+
+  .descripcion-epocas .desc-item {
+    background: #ffd27a;
+    border-color: #ffffff #906200 #906200 #ffffff;
+    h3 { color: #906200; }
+    p { color: #000; }
+  }
+
+  .instrucciones {
+    background: #fe6100;
+    border-color: #ffffff #906200 #906200 #ffffff;
+    color: #fff;
+  }
+}
+
+:host-context(.tema-daltonismo2) .evolucion-wrapper {
+  .timeline-container .timeline .epoca-btn {
+    background: #9a9a9a;
+    color: #000;
+    border-color: #ffffff #404040 #404040 #ffffff;
+    box-shadow: inset -1px -1px 0 #404040, inset 1px 1px 0 #fff;
+
+    &:hover { background: #d2d2d2; }
+
+    &.activa {
+      background: #818181;
+      color: #fff;
+      border-color: #404040 #ffffff #ffffff #404040;
+    }
+  }
+
+  .canvas-container {
+    border-color: #404040;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+
+    .overlay-info .info-box {
+      border-color: #9a9a9a;
+      color: #ececec;
+      strong { color: #d2d2d2; }
+    }
+  }
+
+  .descripcion-epocas .desc-item {
+    background: #d2d2d2;
+    border-color: #ffffff #404040 #404040 #ffffff;
+    h3 { color: #404040; }
+    p { color: #000; }
+  }
+
+  .instrucciones {
+    background: #818181;
+    border-color: #ffffff #404040 #404040 #ffffff;
+    color: #fff;
+  }
+}

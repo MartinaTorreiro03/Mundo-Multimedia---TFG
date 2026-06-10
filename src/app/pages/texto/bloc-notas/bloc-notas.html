@@ -1,0 +1,92 @@
+<div class="ventana" [class.hover-global]="ui.isHovering()">
+
+  <div class="barra-titulo" [class.hover-global]="ui.isHovering()">
+    <span class="icono">📝</span>
+    <span class="titulo">Bloc de notas</span>
+    <div class="botones-titulo">
+      <button class="btn-titulo" tabindex="-1">_</button>
+      <button class="btn-titulo" tabindex="-1">□</button>
+      <button class="btn-titulo btn-cerrar-win" (click)="limpiar()" tabindex="-1">✕</button>
+    </div>
+  </div>
+
+  <div class="menu-bar" [class.hover-global]="ui.isHovering()">
+    <span>Archivo</span>
+    <span>Editar</span>
+    <span>Formato</span>
+    <span>Ver</span>
+    <span>Ayuda</span>
+  </div>
+
+  @if (voiceNav.enabled()) {
+    <p class="voz-pistas-bloc" aria-hidden="true">
+      <span class="voz-pista">escribir</span>
+      <span class="voz-pistas-bloc-texto">di lo que quieres escribir; luego</span>
+      <span class="voz-pista">guardar</span>
+      <span class="voz-pistas-bloc-texto">· otro texto:</span>
+      <span class="voz-pista">limpiar</span>
+    </p>
+  }
+  <div class="area-texto-wrap">
+    <textarea [class.hover-global]="ui.isHovering()"
+      class="area-texto"
+      [(ngModel)]="texto"
+      placeholder="Escribe aquí tu texto...&#10;&#10;Puedes guardar lo que escribas y quedará en la página."
+      spellcheck="false"
+      maxlength="500">
+    </textarea>
+    <span class="bloc-speak-wrap bloc-speak-wrap--textarea"
+          [appSpeakable]="'Aquí puedes escribir todo lo que quieras en este bloc de notas.'">
+    </span>
+  </div>
+
+  @if (keyboardNav.enabled()) {
+    <aside class="teclado-pista-bloc" aria-live="polite">
+      Para seleccionar los botones <strong>Guardar</strong> y <strong>Limpiar</strong>, pulsa la flecha
+      <strong>abajo</strong>.
+    </aside>
+  }
+
+  <div class="barra-estado" [class.hover-global]="ui.isHovering()">
+    <div class="acciones">
+      <div class="btn-accion-wrap">
+        <div class="btn-accion-row">
+          <button class="btn-accion btn-guardar" (click)="guardar()" [class.guardado]="estaGuardado">
+            {{ estaGuardado ? '✓ Guardado' : '💾 Guardar' }}
+          </button>
+          <span class="bloc-speak-wrap"
+                [appSpeakable]="'Botón guardar. Guarda el texto que has escrito en el bloc de notas.'">
+          </span>
+        </div>
+        @if (voiceNav.enabled()) {
+          <span class="voz-pista voz-pista--debajo-control" aria-hidden="true">guardar</span>
+        }
+      </div>
+      <div class="btn-accion-wrap">
+        <div class="btn-accion-row">
+          <button class="btn-accion btn-limpiar" (click)="limpiar()">
+            🗑 Limpiar
+          </button>
+          <span class="bloc-speak-wrap"
+                [appSpeakable]="'Botón limpiar. Borra el texto actual y también el mensaje guardado.'">
+          </span>
+        </div>
+        @if (voiceNav.enabled()) {
+          <span class="voz-pista voz-pista--debajo-control" aria-hidden="true">limpiar</span>
+        }
+      </div>
+    </div>
+    <span class="contador">{{ texto.length }} / 500 caracteres</span>
+  </div>
+
+</div>
+
+<div class="nota-guardada" *ngIf="guardadoVisible && guardado" [class.hover-global]="ui.isHovering()">
+  <div class="nota-cabecera">
+    <span>Tu texto guardado</span>
+    <span class="bloc-speak-wrap bloc-speak-wrap--saved"
+          [appSpeakable]="guardado">
+    </span>
+  </div>
+  <p class="nota-contenido">{{ guardado }}</p>
+</div>

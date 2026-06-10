@@ -1,0 +1,154 @@
+<div class="portada" data-surface="dark">
+  <h1 [style.color]="ui.accentColor('h1')" appSpeakable>MUNDO MULTIMEDIA</h1>
+  <img [src]="imagenPortada()" alt="Portada de la página principal">
+</div>
+
+<section id="seccion1" data-surface="light">
+  <h2 [style.color]="ui.accentColor('h2')" appSpeakable>¿QUÉ ES LA MULTIMEDIA?</h2>
+  <div class="parrafo-seccion1">
+    <p class="parrafo-seccion1" [innerHTML]="texto('seccion1')" [style.color]="ui.accentColorParrafo()" scrollReveal appSpeakable></p>
+  </div>
+  <div class="boton-juego-wrap">
+    <button class="btn-juego" [class.hover-global]="ui.isHovering()" (click)="openJuego()">¡Juguemos!</button>
+    @if (voiceNav.enabled()) {
+      <span class="voz-pista voz-pista--debajo-control" aria-hidden="true">juguemos</span>
+    }
+    <span [appSpeakable]="'Botón. ¡Juguemos!'"></span>
+  </div>
+  @if (juegoShellMounted()) {
+    <app-popup
+      [open]="juegoOpen()"
+      [title]="'Mini juego'"
+      [theme]="juegoTheme()"
+      (closed)="closeJuego()">
+      <app-juego></app-juego>
+    </app-popup>
+    @if (juegoOpen() && keyboardNav.enabled()) {
+      <aside class="juego-instructions-panel" aria-live="polite">
+        <h3>Cómo mover dispositivos</h3>
+        <p><strong>Enter</strong> sobre un dispositivo para cogerlo.</p>
+        <p><strong>Flechas</strong> para mover el destino entre áreas.</p>
+        <p><strong>Enter</strong> otra vez para soltarlo en el área seleccionada.</p>
+      </aside>
+    }
+    @if (juegoOpen() && voiceNav.enabled() && !keyboardNav.enabled()) {
+      <aside class="juego-instructions-panel juego-instructions-panel--voice" aria-live="polite">
+        <h3>Modo voz</h3>
+        <p>
+          Di <strong>dispositivo + área</strong> o <strong>dispositivo + devolver</strong> para mover
+          el dispositivo a su destino correspondiente.
+        </p>
+      </aside>
+    }
+  }
+  <img [src]="imagenSeccion1()" alt="CDs">
+</section>
+
+<section id="seccion2" data-surface="light">
+  <h2 [style.color]="ui.accentColor('h2')" appSpeakable>HISTORIA DE LA MULTIMEDIA</h2>
+
+  <div class="bloque izquierda">
+    <div class="texto">
+      <h3 class="subtitulo-1" [style.color]="ui.accentColor('h3')" [class.hover-global]="ui.isHovering()" appSpeakable>PRECURSORES DE LA MULTIMEDIA</h3>
+      <p [innerHTML]="texto('seccion2_1')" class="parrafo-1" [style.color]="ui.accentColorParrafo()" scrollReveal appSpeakable></p>
+    </div>
+
+    <div class="slot">
+      <div class="carrusel carrusel-1" data-carousel-id="1" [class.hover-activo]="ui.isHovering()">
+        @if (voiceNav.enabled()) {
+          <span class="voz-pista voz-pista--carrusel-open" aria-hidden="true">carrusel</span>
+        }
+        <div class="carrusel-imagen" [class.hover-activo]="ui.isHovering()">
+          <div class="flecha-wrap flecha-wrap--izq">
+            <button type="button" class="flecha izq" [class.hover-activo]="ui.isHovering()" (click)="prev(1, $event)" aria-label="Anterior">
+              &#10094;
+            </button>
+            @if (voiceNav.enabled()) {
+              <span class="voz-pista voz-pista--debajo-flecha" aria-hidden="true">izquierda</span>
+            }
+          </div>
+          <img role="button" tabindex="0" [src]="ui.isHovering() && carrusel1[i1].hover ? carrusel1[i1].hover : carrusel1[i1].src" [alt]="carrusel1[i1].title || 'Imagen carrusel 1'" (click)="openCarouselPopup(1)" [class.hover-global]="ui.isHovering()"/>
+          <div class="flecha-wrap flecha-wrap--der">
+            <button type="button" class="flecha der" [class.hover-activo]="ui.isHovering()" (click)="next(1, $event)" aria-label="Siguiente">
+              &#10095;
+            </button>
+            @if (voiceNav.enabled()) {
+              <span class="voz-pista voz-pista--debajo-flecha" aria-hidden="true">derecha</span>
+            }
+          </div>
+        </div>
+
+        <div class="carrusel-titulo" *ngIf="carrusel1[i1]?.title" [class.hover-activo]="ui.isHovering()" [appSpeakable]="carrusel1[i1]?.title">
+          {{ carrusel1[i1].title }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bloque derecha">
+    <div class="slot">
+      <div class="carrusel carrusel-2" data-carousel-id="2" [class.hover-activo]="ui.isHovering()">
+        @if (voiceNav.enabled()) {
+          <span class="voz-pista voz-pista--carrusel-open" aria-hidden="true">carrusel</span>
+        }
+        <div class="carrusel-imagen" [class.hover-activo]="ui.isHovering()">
+          <div class="flecha-wrap flecha-wrap--izq">
+            <button type="button" class="flecha izq" [class.hover-activo]="ui.isHovering()" (click)="prev(2, $event)" aria-label="Anterior">
+              &#10094;
+            </button>
+            @if (voiceNav.enabled()) {
+              <span class="voz-pista voz-pista--debajo-flecha" aria-hidden="true">izquierda</span>
+            }
+          </div>
+          <img role="button" tabindex="0" [src]="ui.isHovering() && carrusel2[i2].hover ? carrusel2[i2].hover : carrusel2[i2].src" [alt]="carrusel2[i2].title || 'Imagen carrusel 2'" (click)="openCarouselPopup(2)" [class.hover-global]="ui.isHovering()" />
+          <div class="flecha-wrap flecha-wrap--der">
+            <button type="button" class="flecha der" [class.hover-activo]="ui.isHovering()" (click)="next(2, $event)" aria-label="Siguiente">
+              &#10095;
+            </button>
+            @if (voiceNav.enabled()) {
+              <span class="voz-pista voz-pista--debajo-flecha" aria-hidden="true">derecha</span>
+            }
+          </div>
+        </div>
+        <div class="carrusel-titulo" *ngIf="carrusel2[i2]?.title" [class.hover-activo]="ui.isHovering()" [appSpeakable]="carrusel2[i2]?.title">
+          {{ carrusel2[i2].title }}
+        </div>
+      </div>
+    </div>
+
+    <div class="texto">
+      <h3 class="subtitulo-2" [style.color]="ui.accentColor('h3')" [class.hover-global]="ui.isHovering()" appSpeakable>EVOLUCIÓN DE LA MULTIMEDIA</h3>
+      <p [innerHTML]="texto('seccion2_2')" class="parrafo-2" [style.color]="ui.accentColorParrafo()" scrollReveal appSpeakable></p>
+    </div>
+  </div>
+
+  <div class="bloque izquierda ultimo">
+    <div class="texto">
+      <h3 class="subtitulo-3" [style.color]="ui.accentColor('h3')" [class.hover-global]="ui.isHovering()" appSpeakable>MULTIMEDIA EN LA ACTUALIDAD</h3>
+      <p [innerHTML]="texto('seccion2_3')" class="parrafo-3" [style.color]="ui.accentColorParrafo()" scrollReveal appSpeakable></p>
+    </div>
+
+    <div class="slot slot-col">
+      <div class="siguiente-wrap">
+        <button class="siguiente" (click)="siguientePagina()" [class.hover-global]="ui.isHovering()">Siguiente Página</button>
+        @if (voiceNav.enabled()) {
+          <span class="voz-pista voz-pista--debajo-control" aria-hidden="true">siguiente</span>
+        }
+      </div>
+      <span [appSpeakable]="'Botón. Siguiente página'"></span>
+    </div>
+
+    <app-popup
+      *ngIf="activePopup() === 'carrusel'"
+      [open]="true"
+      [title]="'Visor de imágenes'"
+      [theme]="carruselTheme()"
+      (closed)="closePopup()">
+      <app-carrusel
+        [items]="popupCarouselItems"
+        [startIndex]="popupCarouselIndex"
+        (indexChange)="onPopupCarouselIndexChange($event)"
+      ></app-carrusel>
+    </app-popup>
+  </div>
+</section>

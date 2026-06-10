@@ -1,0 +1,51 @@
+<section class="carrusel-audio-wrap">
+  @if (voiceNav.enabled()) {
+    <p class="carrusel-ver-voz" aria-hidden="true">
+      <span class="voz-pista voz-pista--encima-control">{{ hintVer }}</span>
+      <span class="voz-pista-sep">·</span>
+      <span class="voz-pista voz-pista--encima-control">{{ hintOcultar }}</span>
+    </p>
+  }
+  <section class="carrusel" [class.hover-global]="ui.isHovering()">
+    <header class="carrusel-titulo" [class.hover-global]="ui.isHovering()">
+      <h3 [appSpeakable]="diapositivas()[indiceActual()].title">{{ diapositivas()[indiceActual()].title }}</h3>
+    </header>
+
+    <section class="carrusel-track" (mouseenter)="pausar()" (mouseleave)="reanudar()">
+      <article
+        class="slide"
+        *ngFor="let slide of diapositivas(); let i = index"
+        [class.activo]="i === indiceActual()"
+        [class.saliendo]="i === indiceSaliente()"
+        [class.mostrar-info]="mostrarInfoEnSlide(i)"
+        [class.hover-slide]="hoverSlideActivo(i)"
+        (mouseenter)="onSlideHover(i, true)"
+        (mouseleave)="onSlideHover(i, false)"
+      >
+        <img [src]="slideSrc(slide, i)" [alt]="slide.title" />
+        <footer class="slide-info">
+          <p [appSpeakable]="slide.text">{{ slide.text }}</p>
+        </footer>
+      </article>
+    </section>
+
+    <nav class="puntos" [class.hover-global]="ui.isHovering()">
+      <button
+        *ngFor="let slide of diapositivas(); let i = index"
+        type="button"
+        class="punto"
+        [attr.data-index]="i"
+        [class.activo]="i === indiceActual()"
+        [attr.aria-label]="'Diapositiva ' + (i + 1) + ' de ' + diapositivas().length + ': ' + slide.title"
+        (click)="irA(i)"
+      ></button>
+    </nav>
+    @if (voiceNav.enabled()) {
+      <p class="carrusel-puntos-voz" aria-hidden="true">
+        <span class="voz-pista">{{ hintIzquierda }}</span>
+        <span class="voz-pista-sep">·</span>
+        <span class="voz-pista">{{ hintDerecha }}</span>
+      </p>
+    }
+  </section>
+</section>

@@ -1,0 +1,109 @@
+<div class="simulador-container" [class.hover-global]="ui.isHovering()" [style.--accent]="instrumentoActivo().color">
+  <div class="selector-instrumentos" [class.hover-global]="ui.isHovering()">
+    @for (ins of instrumentos; track ins.id) {
+      <button
+        type="button"
+        class="btn-ins"
+        [attr.data-ins-id]="ins.id"
+        [class.hover-global]="ui.isHovering()"
+        [class.activo]="instrumentoActivo().id === ins.id"
+        (click)="cambiarInstrumento(ins)">
+        <span class="btn-ins-icon" aria-hidden="true">{{ ins.icon }}</span>
+        <strong class="btn-ins-nombre" appSpeakable>{{ ins.nombre }}</strong>
+        @if (voiceNav.enabled()) {
+          <span class="voz-pista voz-pista--debajo-nombre" aria-hidden="true">{{ pistaInstrumento(ins.id) }}</span>
+        }
+      </button>
+    }
+  </div>
+
+  @if (keyboardNav.enabled()) {
+    <aside class="teclado-pista-instrumentos" aria-live="polite">
+      Para salir del instrumento seleccionado y volver a los instrumentos (o continuar con otros elementos
+      de la página), pulsa la flecha <strong>arriba</strong>.
+    </aside>
+  }
+
+  <div class="area-interaccion">
+    @if (instrumentoActivo().id === 'piano') {
+      <div class="teclado">
+        @for (n of notas; track n; let i = $index) {
+          <button
+            type="button"
+            class="tecla ins-playable"
+            tabindex="-1"
+            [attr.data-voice-slot]="i + 1"
+            [attr.aria-label]="'Tecla ' + (i + 1)"
+            (click)="tocarNota(n)"
+            (mouseenter)="tocarNota(n)"
+            (mousedown)="tocarNota(n)"
+            (touchstart)="tocarNota(n)">
+            @if (voiceNav.enabled()) {
+              <span class="voz-pista voz-pista--dentro-tecla" aria-hidden="true">{{ pistaSlot(i + 1) }}</span>
+            }
+          </button>
+        }
+      </div>
+    }
+
+    @if (instrumentoActivo().id === 'guitarra' || instrumentoActivo().id === 'violin') {
+      <div class="cuerdas">
+        @for (n of notas; track n; let i = $index) {
+          <button
+            type="button"
+            class="cuerda-wrapper ins-playable"
+            tabindex="-1"
+            [attr.data-voice-slot]="i + 1"
+            [attr.aria-label]="instrumentoActivo().nombre + ', cuerda ' + (i + 1)"
+            (click)="tocarNota(n)"
+            (mouseenter)="tocarNota(n)">
+            @if (voiceNav.enabled()) {
+              <span class="voz-pista voz-pista--dentro-cuerda" aria-hidden="true">{{ pistaSlot(i + 1) }}</span>
+            }
+          </button>
+        }
+      </div>
+    }
+
+    @if (instrumentoActivo().id === 'tambor') {
+      <button
+        type="button"
+        class="parche-tambor ins-playable"
+        tabindex="-1"
+        data-voice-slot="1"
+        aria-label="Parche del tambor"
+        (click)="tocarNota(0)"
+        (mousedown)="tocarNota(0)">
+        @if (voiceNav.enabled()) {
+          <span class="voz-pista voz-pista--dentro-tambor" aria-hidden="true">{{ pistaSlot(1) }}</span>
+        }
+      </button>
+    }
+
+    @if (instrumentoActivo().id === 'flauta') {
+      <div class="teclado teclado-flauta">
+        @for (n of notas; track n; let i = $index) {
+          <button
+            type="button"
+            class="tecla tecla-redonda ins-playable"
+            tabindex="-1"
+            [attr.data-voice-slot]="i + 1"
+            [attr.aria-label]="'Agujero ' + (i + 1)"
+            (click)="tocarNota(n)"
+            (mouseenter)="tocarNota(n)"
+            (mousedown)="tocarNota(n)"
+            (touchstart)="tocarNota(n)">
+            @if (voiceNav.enabled()) {
+              <span class="voz-pista voz-pista--dentro-agujero" aria-hidden="true">{{ pistaSlot(i + 1) }}</span>
+            }
+          </button>
+        }
+      </div>
+    }
+  </div>
+
+  <div class="win95-status panel-gris" [class.hover-global]="ui.isHovering()">
+      <span>SYSTEM_READY: {{ instrumentoActivo().nombre | uppercase }}</span>
+      <span>44100Hz / 16-BIT</span>
+    </div>
+</div>

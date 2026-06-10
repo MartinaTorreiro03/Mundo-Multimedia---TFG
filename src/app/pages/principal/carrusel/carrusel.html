@@ -1,0 +1,26 @@
+<div class="ventana-contenido">
+  <img [src]="items[idx]?.src" [alt]="items[idx]?.title || 'Imagen carrusel'"/>
+
+  <div class="ventana-descripcion">
+    <h3 [appSpeakable]="items[idx]?.title">
+      {{ items[idx]?.title }}
+    </h3>
+
+    <p [appSpeakable]="items[idx]?.text">
+      {{ items[idx]?.text }}
+    </p>
+  </div>
+
+  <div class="popup-nav-wrap popup-nav-wrap--prev">
+    <button type="button" class="popup-nav" id="popup-prev" (click)="onPrevClick($event)" aria-label="Anterior">&#9664;</button>
+    @if (voiceHints()) {
+      <span class="voz-pista voz-pista--debajo-flecha" aria-hidden="true">izquierda</span>
+    }
+  </div>
+  <div class="popup-nav-wrap popup-nav-wrap--next">
+    <button type="button" class="popup-nav" id="popup-next" (click)="onNextClick($event)" aria-label="Siguiente">&#9654;</button>
+    @if (voiceHints()) {
+      <span class="voz-pista voz-pista--debajo-flecha" aria-hidden="true">derecha</span>
+    }
+  </div>
+</div>

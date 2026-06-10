@@ -1,0 +1,249 @@
+<div class="machine-wrap" [class.hover-global]="ui.isHovering()" [style.--accent]="eraActiva().accentColor">
+
+  <div class="win95-titlebar" [class.hover-global]="ui.isHovering()" aria-hidden="true">
+    <span class="titlebar-icon">♪</span>
+    <span class="titlebar-title">Máquina del Tiempo Musical — {{ eraActiva().label }}</span>
+    <div class="titlebar-btns">
+      <span>_</span><span>□</span><span>✕</span>
+    </div>
+  </div>
+
+  
+  <div class="win95-body">
+
+    
+    <div class="top-row">
+
+      
+      <div class="dial-panel win95-inset" [class.hover-global]="ui.isHovering()" aria-hidden="true">
+        <div class="dial-ring">
+          <div class="dial-marks">
+            @for (era of eras; track era.id) {
+              <div class="dial-tick"
+                   [style.transform]="'rotate(' + era.dialDeg + 'deg)'"
+                   [class.tick-active]="eraActiva().id === era.id">
+              </div>
+            }
+          </div>
+          <div class="dial-needle" [style.transform]="'rotate(' + eraActiva().dialDeg + 'deg)'"></div>
+          <div class="dial-hub"></div>
+        </div>
+        <div class="dial-year-display">{{ eraActiva().year }}</div>
+      </div>
+
+      
+      <div class="crt-screen win95-inset"
+           [class.hover-global]="ui.isHovering()"
+           [class.transitioning]="isTransitioning()"
+           [appSpeakable]="textoCRT()">
+        <div class="scanlines" aria-hidden="true"></div>
+        <div class="crt-content">
+          <div class="crt-era-tag">[ {{ eraActiva().label }} ]</div>
+          <div class="crt-year">{{ eraActiva().year }}</div>
+          <div class="crt-device">{{ eraActiva().device }}</div>
+          <div class="crt-sublabel">{{ eraActiva().sublabel }}</div>
+          <div class="crt-cursor" [class.blink]="!isTransitioning()" aria-hidden="true">█</div>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="device-stage win95-inset" [class.transitioning]="isTransitioning()" aria-hidden="true">
+      <div class="stage-noise"></div>
+
+      
+      @if (eraActiva().id === 'gramofono') {
+        <div class="device-wrap gramofono-wrap">
+          <div class="bocina" [class.playing]="isPlaying()">
+            <div class="bocina-inner"></div>
+          </div>
+          <div class="gramofono-base">
+            <div class="plato-gram" [class.spinning]="isPlaying()">
+              <div class="disco-gram"></div>
+              <div class="etiqueta-gram"></div>
+            </div>
+            <div class="brazo-gram" [class.tocando]="isPlaying()"></div>
+          </div>
+        </div>
+      }
+
+      
+      @if (eraActiva().id === 'vinilo') {
+        <div class="device-wrap vinilo-wrap">
+          <div class="tocadiscos-body">
+            <div class="plato" [class.spinning]="isPlaying()">
+              <div class="disco">
+                <div class="surcos"></div>
+                <div class="etiqueta"></div>
+                <div class="agujero"></div>
+              </div>
+            </div>
+            <div class="brazo-fonico" [class.tocando]="isPlaying()">
+              <div class="capsula"></div>
+            </div>
+          </div>
+        </div>
+      }
+
+      
+      @if (eraActiva().id === 'cassette') {
+        <div class="device-wrap cassette-wrap">
+          <div class="cassette-body">
+            <div class="cassette-header">
+              <div class="ventana-cassette">
+                <div class="carrete left" [class.spinning]="isPlaying()"></div>
+                <div class="cinta-arco"></div>
+                <div class="carrete right" [class.spinning-r]="isPlaying()"></div>
+              </div>
+            </div>
+            <div class="cassette-label">
+              <span class="cas-brand">TYPE II · CHROME</span>
+              <span class="cas-tiempo">C-90</span>
+            </div>
+            <div class="cassette-footer">
+              <div class="tornillo"></div>
+              <div class="tornillo"></div>
+              <div class="tornillo"></div>
+            </div>
+          </div>
+        </div>
+      }
+
+      
+      @if (eraActiva().id === 'cd') {
+        <div class="device-wrap cd-wrap">
+          <div class="cd-disc" [class.spinning]="isPlaying()">
+            <div class="cd-surface">
+              <div class="cd-ring r1"></div>
+              <div class="cd-ring r2"></div>
+              <div class="cd-ring r3"></div>
+              <div class="cd-iridiscente"></div>
+            </div>
+            <div class="cd-hole"></div>
+          </div>
+          <div class="cd-laser" [class.active]="isPlaying()"></div>
+        </div>
+      }
+
+      
+      @if (eraActiva().id === 'mp3') {
+        <div class="device-wrap ipod-wrap">
+          <div class="ipod-body">
+            <div class="ipod-screen" [class.on]="isPlaying()">
+              <div class="ipod-screen-content">
+                <div class="ipod-title">Now Playing</div>
+                <div class="ipod-track">── ────── ──</div>
+                <div class="ipod-bar" [class.animating]="isPlaying()">
+                  <div class="ipod-progress"></div>
+                </div>
+              </div>
+            </div>
+            <div class="ipod-wheel">
+              <div class="wheel-ring"></div>
+              <div class="wheel-center"></div>
+              <span class="wheel-btn top">▲</span>
+              <span class="wheel-btn bottom">▼</span>
+              <span class="wheel-btn left">◀</span>
+              <span class="wheel-btn right">▶</span>
+            </div>
+          </div>
+        </div>
+      }
+
+      
+      @if (eraActiva().id === 'streaming') {
+        <div class="device-wrap streaming-wrap">
+          <div class="wave-container" [class.playing]="isPlaying()">
+            @for (w of [1,2,3,4,5,6,7]; track w) {
+              <div class="wave-bar" [style.animation-delay]="(w * 0.1) + 's'"></div>
+            }
+          </div>
+          <div class="stream-info">
+            <div class="stream-quality">LOSSLESS · 24bit · 96kHz</div>
+            <div class="stream-dots">
+              @for (d of [1,2,3]; track d) {
+                <span class="stream-dot" [class.active]="isPlaying()" [style.animation-delay]="(d * 0.3) + 's'"></span>
+              }
+            </div>
+          </div>
+          <div class="particulas-wrap">
+            @for (p of [1,2,3,4,5,6]; track p) {
+              <div class="particula" [class.float]="isPlaying()" [style.animation-delay]="(p * 0.18) + 's'"></div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    
+    <div class="controls-row">
+      <div class="control-cell">
+        <button class="win95-btn"
+                [class.hover-global]="ui.isHovering()"
+                (click)="stepEra(-1)"
+                [disabled]="prevDisabled || isTransitioning()"
+                aria-label="Era anterior">
+          <span class="btn-label">◀ ANTERIOR</span>
+          @if (voiceNav.enabled()) {
+            <span class="voz-pista voz-pista--dentro-boton" aria-hidden="true">{{ pistaControl('anterior') }}</span>
+          }
+        </button>
+      </div>
+      <div class="control-cell">
+        <button class="win95-btn btn-play"
+                [class.hover-global]="ui.isHovering()"
+                (click)="togglePlay()"
+                [class.pressed]="isPlaying()"
+                [attr.aria-label]="isPlaying() ? 'Pausar sonido de la era' : 'Reproducir sonido de la era'">
+          <span class="btn-label">{{ isPlaying() ? '⏸ PAUSE' : '▶ PLAY' }}</span>
+          @if (voiceNav.enabled()) {
+            <span class="voz-pista voz-pista--dentro-boton" aria-hidden="true">{{ pistaControl('play') }}</span>
+          }
+        </button>
+      </div>
+      <div class="control-cell">
+        <button class="win95-btn"
+                [class.hover-global]="ui.isHovering()"
+                (click)="stepEra(1)"
+                [disabled]="nextDisabled || isTransitioning()"
+                aria-label="Era siguiente">
+          <span class="btn-label">SIGUIENTE ▶</span>
+          @if (voiceNav.enabled()) {
+            <span class="voz-pista voz-pista--dentro-boton" aria-hidden="true">{{ pistaControl('siguiente') }}</span>
+          }
+        </button>
+      </div>
+    </div>
+
+    
+    <div class="era-selector">
+      @for (era of eras; track era.id) {
+        <div class="era-cell">
+          <button class="era-btn"
+                  [attr.data-era-id]="era.id"
+                  [class.hover-global]="ui.isHovering()"
+                  [class.active]="eraActiva().id === era.id"
+                  [disabled]="isTransitioning()"
+                  (click)="cambiarEra(era)"
+                  [attr.aria-label]="era.label + ', año ' + era.year">
+            <span class="era-year" aria-hidden="true">{{ era.year }}</span>
+            <span class="era-name" aria-hidden="true">{{ era.id.toUpperCase() }}</span>
+            @if (voiceNav.enabled()) {
+              <span class="voz-pista voz-pista--dentro-boton" aria-hidden="true">{{ pistaEra(era.id) }}</span>
+            }
+          </button>
+        </div>
+      }
+    </div>
+
+    
+    <div class="win95-statusbar" [class.hover-global]="ui.isHovering()" aria-hidden="true">
+      <span class="status-item">{{ eraActiva().device }}</span>
+      <span class="status-sep">│</span>
+      <span class="status-item">{{ isPlaying() ? '▶ REPRODUCIENDO' : '⏹ DETENIDO' }}</span>
+      <span class="status-sep">│</span>
+      <span class="status-item">ERA {{ currentIdx() + 1 }} DE {{ eras.length }}</span>
+    </div>
+
+  </div>
+</div>

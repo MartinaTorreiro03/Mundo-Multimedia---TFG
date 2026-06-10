@@ -1,0 +1,87 @@
+<div class="portada" data-surface="dark" [class.hover-global]="ui.isHovering()">
+    <h1 [style.color]="ui.accentColor('h1', h1Colors)" appSpeakable>AUDIOVISUAL</h1>
+    <img [src]="imagenPortada()" alt="Portada de la página de audiovisual">
+</div>
+
+<section id="seccion1" data-surface="light" [class.hover-global]="ui.isHovering()">
+    <h2 [style.color]="ui.accentColor('h2')" appSpeakable>CUANDO LA IMAGEN SE ENCONTRÓ CON EL SONIDO</h2>
+    <h3 [style.color]="ui.accentColor('h3')" [class.hover-global]="ui.isHovering()" scrollReveal appSpeakable>
+        El cine mudo ya fascinaba, pero cuando la imagen se unió al sonido, nació la verdadera magia audiovisual.</h3>
+    <app-comparacion></app-comparacion>
+    <p [innerText]="texto('seccion1')" [style.color]="ui.accentColorParrafo()" scrollReveal appSpeakable></p>
+</section>
+
+<section id="seccion2" data-surface="light" [class.hover-global]="ui.isHovering()">
+    <h2 [style.color]="ui.accentColor('h2')" appSpeakable>DE LA GRAN PANTALLA A TU BOLSILLO</h2>
+    <h3 [style.color]="ui.accentColor('h3')" [class.hover-global]="ui.isHovering()" scrollReveal appSpeakable>
+        Del cine a la televisión, del VHS al streaming: las historias viajaron de la sala oscura al salón de casa, y de ahí al bolsillo.</h3>
+    <p [innerText]="texto('seccion2')" [style.color]="ui.accentColorParrafo()" scrollReveal appSpeakable></p>
+    <app-sintonizador-transmedia></app-sintonizador-transmedia>
+</section>
+
+<section id="seccion3" data-surface="light" [class.hover-global]="ui.isHovering()">
+    <h2 [style.color]="ui.accentColor('h2')" scrollReveal appSpeakable>INTERACTUAR, CREAR Y COMPARTIR</h2>
+    <h3 [style.color]="ui.accentColor('h3')" [class.hover-global]="ui.isHovering()" scrollReveal appSpeakable>
+        Hoy lo audiovisual es participación: ya no solo miramos, también elegimos, creamos y compartimos.</h3>
+    <p [innerText]="texto('seccion3')" [style.color]="ui.accentColorParrafo()" scrollReveal appSpeakable></p>
+    <app-collage-interactivo></app-collage-interactivo>
+
+    <div class="seccion3-cierre">
+        <div class="ventanita" scrollReveal
+             [class.hover-global]="ui.isHovering()"
+             [class.audiovisual-ventanita-voz-activa]="ventanitaVozActiva()">
+            <div class="ventanita-titulo">
+                <span class="ventanita-titulo-texto">Dos momentos de lo audiovisual</span>
+                <span [appSpeakable]="'Ventana. Dos momentos de lo audiovisual: quinetófono y cámara digital. Pulsa cada vídeo para leer más.'"></span>
+            </div>
+            <div class="ventanita-cuerpo">
+                @for (d of dispositivos; track d.clave) {
+                    <div class="ventanita-item">
+                        <button type="button"
+                                class="ventanita-video-btn"
+                                [attr.aria-label]="'Abrir información sobre ' + d.nombre"
+                                [class.hover-global]="ui.isHovering()"
+                                (mouseenter)="onVideoHover($event, true)"
+                                (mouseleave)="onVideoHover($event, false)"
+                                (click)="abrirDispositivo(d)">
+                            <video [src]="d.video" autoplay loop muted playsinline></video>
+                            <span class="ventanita-overlay" aria-hidden="true">Ver más</span>
+                        </button>
+                        <div class="ventanita-pie">
+                            <span class="ventanita-pie-nombre">{{ d.nombre }}</span>
+                            <span class="ventanita-pie-anio">{{ d.anio }}</span>
+                            <span class="ventanita-pie-lector"
+                                  [appSpeakable]="'Botón. ' + d.nombre + ', ' + d.anio + '. Pulsa para ver más información.'">
+                            </span>
+                            @if (voiceNav.enabled()) {
+                              <span class="voz-pista voz-pista--debajo-control" aria-hidden="true">{{ pistaVozDispositivo(d.clave) }}</span>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="siguiente-wrap">
+            <button type="button" class="btn-seccion3" (click)="siguientePagina()" [class.hover-global]="ui.isHovering()">
+                Siguiente página
+            </button>
+            @if (voiceNav.enabled()) {
+              <span class="voz-pista voz-pista--debajo-control" aria-hidden="true">{{ hint('siguiente') }}</span>
+            }
+            <span [appSpeakable]="'Botón. Siguiente página'"></span>
+        </div>
+    </div>
+
+    <app-popup class="popup-dos-momentos" *ngIf="isDispositivoPopupOpen && dispositivoSeleccionado"
+               [title]="dispositivoSeleccionado.nombre + ' · ' + dispositivoSeleccionado.anio"
+               [theme]="audiovisualTheme()"
+               [size]="{ w: 720 }"
+               (closed)="cerrarDispositivo()">
+        <div class="dispositivo-popup">
+            <p class="dispositivo-popup-texto" appSpeakable>
+                {{ textoDispositivo(dispositivoSeleccionado.clave) }}
+            </p>
+        </div>
+    </app-popup>
+</section>

@@ -1,0 +1,169 @@
+<div id="collage" [class.ventana-activa]="ventanaActiva" [class.hover-global]="ui.isHovering()">
+  <div class="collage-layout">
+
+    <div class="panel">
+      <div class="panel-columns-group">
+        <div class="column"
+             id="videos"
+             data-mm-role="cl-col-videos"
+             [class.hover-global]="ui.isHovering()"
+             [class.cl-column-voz-activa]="isClColumnaVozActiva('videos')">
+          <div class="cl-col-head-wrap">
+            <h3>Vídeos</h3>
+            @if (voiceNav.enabled()) {
+              <span class="voz-pista voz-pista--debajo-fuera" aria-hidden="true">{{ pistaColumna('videos') }}</span>
+            }
+            <span [appSpeakable]="'Columna de vídeos.'"></span>
+          </div>
+          @for (item of videos; track item.src; let i = $index) {
+            <div class="cl-item-wrap">
+              <button type="button"
+                class="item"
+                [attr.data-mm-role]="'cl-videos-item-' + (i + 1)"
+                [attr.aria-label]="item.label + ' (vídeo)'"
+                [attr.aria-pressed]="isVideoActive(item.src)"
+                [class.hover-global]="ui.isHovering()"
+                [class.active]="isVideoActive(item.src)"
+                (click)="toggleVideo(item.src)">
+                <video [src]="item.src" muted loop preload="metadata"></video>
+              </button>
+              @if (voiceNav.enabled()) {
+                <span class="voz-pista voz-pista--debajo-fuera" aria-hidden="true">{{ pistaItem(i) }}</span>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="column"
+             id="audios"
+             data-mm-role="cl-col-audios"
+             [class.hover-global]="ui.isHovering()"
+             [class.cl-column-voz-activa]="isClColumnaVozActiva('audios')">
+          <div class="cl-col-head-wrap">
+            <h3>Sonidos</h3>
+            @if (voiceNav.enabled()) {
+              <span class="voz-pista voz-pista--debajo-fuera" aria-hidden="true">{{ pistaColumna('audios') }}</span>
+            }
+            <span [appSpeakable]="'Columna de sonidos.'"></span>
+          </div>
+          @for (item of audios; track item.src; let i = $index) {
+            <div class="cl-item-wrap">
+              <button type="button"
+                class="item"
+                [attr.data-mm-role]="'cl-audios-item-' + (i + 1)"
+                [attr.aria-label]="item.label + ' (sonido)'"
+                [attr.aria-pressed]="isAudioActive(item.src)"
+                [class.hover-global]="ui.isHovering()"
+                [class.active]="isAudioActive(item.src)"
+                (click)="toggleAudio(item.src)">
+                {{ item.label }}
+              </button>
+              @if (voiceNav.enabled()) {
+                <span class="voz-pista voz-pista--debajo-fuera" aria-hidden="true">{{ pistaItem(i) }}</span>
+              }
+              <span [appSpeakable]="'Botón. Sonido ' + item.label + '.'"></span>
+            </div>
+          }
+          @for (_ of audioFiller; track $index) {
+            <div class="cl-item-wrap" aria-hidden="true">
+              <div class="item placeholder-item" [class.hover-global]="ui.isHovering()"></div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div id="screen" #screenEl data-vision-ignore="true" [class.hover-global]="ui.isHovering()">
+      @if (!hasContent) {
+        <div id="placeholder" appSpeakable data-vision-ignore-text="true">
+          Selecciona elementos para crear tu collage
+        </div>
+      }
+      @if (activeVideoSrc) {
+        <video [src]="activeVideoSrc" muted loop autoplay playsinline></video>
+      }
+      @for (txt of textoInstances; track txt.src) {
+        <img [src]="txt.src" class="media-draggable texto-style"
+          [style.left.%]="txt.x" [style.top.%]="txt.y" [style.transform]="'scale(' + txt.scale + ')'"
+          (mousedown)="onMouseDown($event, txt, screenEl)" (click)="handleScaleClick($event, txt)" />
+      }
+      @for (gif of gifInstances; track gif.src) {
+        <img [src]="gif.src" class="media-draggable"
+          [style.left.%]="gif.x" [style.top.%]="gif.y" [style.transform]="'scale(' + gif.scale + ')'"
+          (mousedown)="onMouseDown($event, gif, screenEl)" (click)="handleScaleClick($event, gif)" />
+      }
+    </div>
+
+    <div class="panel">
+      <div class="panel-columns-group">
+        <div class="column"
+             id="textos"
+             data-mm-role="cl-col-textos"
+             [class.hover-global]="ui.isHovering()"
+             [class.cl-column-voz-activa]="isClColumnaVozActiva('textos')">
+          <div class="cl-col-head-wrap">
+            <h3>Textos</h3>
+            @if (voiceNav.enabled()) {
+              <span class="voz-pista voz-pista--debajo-fuera" aria-hidden="true">{{ pistaColumna('textos') }}</span>
+            }
+            <span [appSpeakable]="'Columna de textos animados.'"></span>
+          </div>
+          @for (item of textos; track item.src; let i = $index) {
+            <div class="cl-item-wrap">
+              <button type="button"
+                class="item"
+                [attr.data-mm-role]="'cl-textos-item-' + (i + 1)"
+                [attr.aria-label]="item.alt + ' (texto)'"
+                [attr.aria-pressed]="isTextoActive(item.src)"
+                [class.hover-global]="ui.isHovering()"
+                [class.active]="isTextoActive(item.src)"
+                (click)="toggleTexto(item)">
+                <img [src]="item.src" [alt]="item.alt" />
+              </button>
+              @if (voiceNav.enabled()) {
+                <span class="voz-pista voz-pista--debajo-fuera" aria-hidden="true">{{ pistaItem(i) }}</span>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="column"
+             id="gifs"
+             data-mm-role="cl-col-gifs"
+             [class.hover-global]="ui.isHovering()"
+             [class.cl-column-voz-activa]="isClColumnaVozActiva('gifs')">
+          <div class="cl-col-head-wrap">
+            <h3>GIFs</h3>
+            @if (voiceNav.enabled()) {
+              <span class="voz-pista voz-pista--debajo-fuera" aria-hidden="true">{{ pistaColumna('gifs') }}</span>
+            }
+            <span [appSpeakable]="'Columna de gifs.'"></span>
+          </div>
+          @for (item of gifs; track item.src; let i = $index) {
+            <div class="cl-item-wrap">
+              <button type="button"
+                class="item"
+                [attr.data-mm-role]="'cl-gifs-item-' + (i + 1)"
+                [attr.aria-label]="item.alt + ' (gif)'"
+                [attr.aria-pressed]="isGifActive(item.src)"
+                [class.hover-global]="ui.isHovering()"
+                [class.active]="isGifActive(item.src)"
+                (click)="toggleGif(item)">
+                <img [src]="item.src" [alt]="item.alt" />
+              </button>
+              @if (voiceNav.enabled()) {
+                <span class="voz-pista voz-pista--debajo-fuera" aria-hidden="true">{{ pistaItem(i) }}</span>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  @if (hasContent) {
+    <p class="gif-hint" appSpeakable>
+      🖱️ Arrastra elementos · 💡 Click + Ctrl para agrandar (o solo Click para rotar escala)
+    </p>
+  }
+</div>

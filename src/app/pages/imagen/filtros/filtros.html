@@ -1,0 +1,77 @@
+<div
+  class="editor-window"
+  [class.hover-global]="ui.isHovering()"
+  [class.filtros-voz-activa]="filtrosSeccionVozActiva()"
+>
+  <div class="editor-titlebar">
+    <span>Filtros</span>
+    <div class="close-btn">X</div>
+  </div>
+
+  <p class="teclado-pista-filtros" aria-live="polite">
+    En cada slider: pulsa <strong>Enter</strong> para empezar a editar, usa las
+    <strong>flechas</strong> para cambiar el valor y pulsa <strong>Enter</strong> otra vez para salir.
+  </p>
+
+  <div class="editor-content">
+    <div class="image-preview-row">
+      @if (voiceNav.enabled()) {
+        <aside class="voz-pistas-filtros voz-pistas-filtros--izq" aria-hidden="true">
+          <p class="voz-pistas-filtros-titulo">1. Decir filtro</p>
+          @for (f of filtrosVozLista; track f.clave) {
+            <span class="voz-pista voz-pista--filtro-nombre">{{ f.hintLabel }}</span>
+          }
+        </aside>
+      }
+
+      <div class="image-preview-container">
+        <img [src]="imagenFiltro()" [style.filter]="imageFilter()" alt="Vista previa con filtros aplicados">
+        @if (voiceNav.enabled() && filtroVozActivo(); as activo) {
+          <span class="voz-pista voz-pista--filtro-activo" aria-hidden="true">Editando: {{ pistaFiltro(activo) }}</span>
+        }
+      </div>
+
+      @if (voiceNav.enabled()) {
+        <aside class="voz-pistas-filtros voz-pistas-filtros--der" aria-hidden="true">
+          <p class="voz-pistas-filtros-titulo">2. En el slider</p>
+          <span class="voz-pista voz-pista--filtro-unidad">cinco más / cinco menos</span>
+          <span class="voz-pista voz-pista--filtro-unidad">diez más / diez menos</span>
+          <span class="voz-pista voz-pista--filtro-unidad">quince más / veinte menos</span>
+          <span class="voz-pista voz-pista--filtro-unidad">cien más / cien menos</span>
+          <span class="voz-pista voz-pista--filtro-salir">salir</span>
+        </aside>
+      }
+    </div>
+
+    <div class="filters-grid">
+      @for (f of filtrosVozLista; track f.clave) {
+        <div class="filter-control" [class.filter-control--voz-activo]="filtroVozActivo() === f.clave">
+          <div class="filter-head">
+            <label>{{ f.label }}</label>
+            <span class="filter-speak" [appSpeakable]="f.label"></span>
+          </div>
+          @if (voiceNav.enabled()) {
+            <span class="voz-pista voz-pista--filtro-slider" aria-hidden="true">{{ f.hintLabel }}</span>
+          }
+          <input
+            type="range"
+            [attr.data-filter-key]="f.clave"
+            [value]="filters()[f.clave]"
+            (input)="setFilter(f.clave, $event)"
+            [min]="f.min"
+            [max]="f.max"
+          >
+        </div>
+      }
+    </div>
+  </div>
+  <svg width="0" height="0" style="position:absolute;">
+    <filter id="pixelate-filter" x="0" y="0">
+      <feFlood x="0" y="0" [attr.height]="filters().pixelate" [attr.width]="filters().pixelate" />
+      <feComposite [attr.width]="filters().pixelate" [attr.height]="filters().pixelate" />
+      <feTile result="tiles" />
+      <feComposite in="SourceGraphic" in2="tiles" operator="in" />
+      <feMorphology operator="dilate" [attr.radius]="filters().pixelate / 2" />
+    </filter>
+  </svg>
+</div>

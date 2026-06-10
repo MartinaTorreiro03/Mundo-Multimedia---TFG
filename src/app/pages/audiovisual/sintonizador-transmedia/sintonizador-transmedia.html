@@ -1,0 +1,130 @@
+<div class="win95-window" [class.hover-global]="ui.isHovering()">
+  <div class="title-bar">
+    <div class="title-bar-text-wrap">
+      <div class="title-bar-text">HISTORY_BROWSER.EXE</div>
+      <span [appSpeakable]="'History Browser punto EXE.'"></span>
+    </div>
+    <div class="title-bar-controls" aria-hidden="true">
+      <span class="titlebar-btn">_</span>
+      <span class="titlebar-btn">□</span>
+      <span class="titlebar-btn">×</span>
+    </div>
+  </div>
+
+  <div class="window-content">
+    <div class="timeline-container inset-panel">
+      <div class="timeline-track">
+      @for (era of eras(); track era.id; let i = $index) {
+        <div class="timeline-item">
+          <div class="era-btn-cell">
+            <button
+              type="button"
+              class="era-btn raise"
+              [attr.data-mm-role]="'sin-era-' + (i + 1)"
+              [class.hover-global]="ui.isHovering()"
+              [class.active]="selectedEra().id === era.id"
+              [attr.aria-label]="era.title + ', año ' + era.year"
+              (click)="selectEra(era)">
+              {{ era.year }}
+            </button>
+            @if (voiceNav.enabled()) {
+              <span class="voz-pista voz-pista--debajo-fuera" aria-hidden="true">{{ pistaEra(i) }}</span>
+            }
+            <span [appSpeakable]="'Botón. ' + era.title + ', año ' + era.year + '.'"></span>
+          </div>
+          <div class="connector" *ngIf="!$last" aria-hidden="true"></div>
+        </div>
+      }
+      </div>
+    </div>
+
+    <div class="monitor-wrapper" [ngClass]="selectedEra().uiStyle" [class.hover-global]="ui.isHovering()">
+      <div class="screen-border">
+        <div class="screen-area">
+          <div class="screen-glass" [style.filter]="selectedEra().filter">
+            <video #eraVideo
+              [src]="selectedEra().videoSrc"
+              [muted]="muted()"
+              [attr.width]="videoWidth"
+              [attr.height]="videoHeight"
+              autoplay="false"
+              [style.width]="videoWidth + 'px'"
+              [style.height]="videoHeight + 'px'"
+              style="background: black; display: block;">
+            </video>
+            <ng-container [ngSwitch]="selectedEra().uiStyle">
+              <div *ngSwitchCase="'crt-60s'" class="crt-overlay" aria-hidden="true"></div>
+              <div *ngSwitchCase="'vhs-90s'" class="vhs-overlay" aria-hidden="true"></div>
+              <div *ngSwitchCase="'cinema'" class="flicker" aria-hidden="true"></div>
+              <div *ngSwitchCase="'youtube-00s'" class="loading-circle" aria-hidden="true"></div>
+            </ng-container>
+          </div>
+        </div>
+
+        
+        <div class="video-controls">
+          <div class="sin-btn-wrap">
+            <button type="button" class="ms-btn" data-mm-role="sin-play"
+                    [class.hover-global]="ui.isHovering()" (click)="play()" aria-label="Reproducir vídeo">▶️ Play</button>
+            @if (voiceNav.enabled()) {
+              <span class="voz-pista voz-pista--debajo-fuera" aria-hidden="true">{{ pistaPlay() }}</span>
+            }
+            <span [appSpeakable]="'Botón. Reproducir vídeo.'"></span>
+          </div>
+          <div class="sin-btn-wrap">
+            <button type="button" class="ms-btn" data-mm-role="sin-pause"
+                    [class.hover-global]="ui.isHovering()" (click)="pause()" aria-label="Pausar vídeo">⏸️ Pause</button>
+            @if (voiceNav.enabled()) {
+              <span class="voz-pista voz-pista--debajo-fuera" aria-hidden="true">{{ pistaPause() }}</span>
+            }
+            <span [appSpeakable]="'Botón. Pausar vídeo.'"></span>
+          </div>
+          <div class="sin-btn-wrap">
+            <button type="button" class="ms-btn" data-mm-role="sin-mute"
+                    [class.hover-global]="ui.isHovering()" (click)="toggleMute()"
+                    [attr.aria-label]="muted() ? 'Activar sonido del vídeo' : 'Silenciar vídeo'">
+              <ng-container *ngIf="muted(); else muteBlock">🔊 Unmute</ng-container>
+              <ng-template #muteBlock>🔇 Mute</ng-template>
+            </button>
+            @if (voiceNav.enabled()) {
+              <span class="voz-pista voz-pista--debajo-fuera" aria-hidden="true">{{ pistaMute() }}</span>
+            }
+            <span [appSpeakable]="'Botón. ' + (muted() ? 'Activar sonido del vídeo.' : 'Silenciar vídeo.')"></span>
+          </div>
+        </div>
+
+        <div class="monitor-hardware" aria-hidden="true">
+          <div class="brand">NEURAL-VISION</div>
+          <div class="hardware-controls">
+            <div class="knob"></div>
+            <div class="knob"></div>
+            <div class="led-power"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box inset-panel" [class.hover-global]="ui.isHovering()">
+      <div class="era-title-row">
+        <h3 class="era-title">{{ selectedEra().title }}</h3>
+        <span [appSpeakable]="selectedEra().title + '.'"></span>
+      </div>
+      <p class="era-text" appSpeakable>{{ textoExplicacion() }}</p>
+    </div>
+  </div>
+
+  <div class="status-bar" [class.hover-global]="ui.isHovering()">
+    <div class="status-bar-cell">
+      <p class="status-bar-field">Sintonizando: {{ selectedEra().year }}</p>
+      <span [appSpeakable]="'Sintonizando año ' + selectedEra().year + '.'"></span>
+    </div>
+    <div class="status-bar-cell">
+      <p class="status-bar-field">Modo: {{ selectedEra().uiStyle | uppercase }}</p>
+      <span [appSpeakable]="'Modo de pantalla: ' + selectedEra().uiStyle + '.'"></span>
+    </div>
+    <div class="status-bar-cell">
+      <p class="status-bar-field">CPU: 486 DX2</p>
+      <span [appSpeakable]="'CPU: 486 DX2.'"></span>
+    </div>
+  </div>
+</div>

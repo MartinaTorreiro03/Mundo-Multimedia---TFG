@@ -1,0 +1,93 @@
+
+
+.contenido {
+  background: white;
+  transition: background 0.4s ease;
+}
+
+.contenido.hover-global {
+  background: black;
+}
+
+.piePagina {
+  min-height: 0;
+  height: auto;
+  width: 100%;
+  max-width: 100vw;
+  box-sizing: border-box;
+  background: var(--footer-bg, #513755);
+  color: white;
+  text-align: center;
+  padding: 12px 10px 16px;
+  font-size: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  transition: background 0.4s ease;
+  overflow-x: hidden;
+}
+
+.piePagina.hover-global {
+  background: #383838;
+  color: #9e9e9e;
+}
+
+.voz-scroll-strip {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 1190;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  pointer-events: none;
+}
+
+.keyboard-nav-help {
+  position: fixed;
+  right: 16px;
+  bottom: 92px;
+  z-index: 1200;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: rgba(20, 20, 20, 0.92);
+  color: #f3f3f3;
+  border: 2px solid #6a6a6a;
+  border-right-color: #1a1a1a;
+  border-bottom-color: #1a1a1a;
+  padding: 8px 10px;
+  font-size: 12px;
+}
+
+body.keyboard-nav-enabled :focus {
+  outline: 3px solid #ffc400 !important;
+  outline-offset: 2px;
+}
+
+body.keyboard-nav-enabled .keyboard-selected {
+  outline: 3px solid #ffc400 !important;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.6);
+}
+
+body.keyboard-nav-enabled app-header nav.menuWrap ul li.keyboard-selected,
+body.keyboard-nav-enabled app-menu-accesibilidad .menu-wrap ul li.keyboard-selected {
+  transform: scale(1.12);
+  transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease;
+  background: rgba(255, 196, 0, 0.18);
+  color: #fff;
+  border-radius: 4px;
+  padding-inline: 8px;
+}
+
+body.keyboard-nav-enabled app-menu-lateral .menu-wrap img.keyboard-selected {
+  transform: scale(1.14);
+  transition: transform 0.15s ease, filter 0.15s ease;
+  filter: drop-shadow(0 0 6px #ffc400);
+}
+
+main.contenido :is(h1, h2, h3, h4, p) {
+  scroll-margin-block: min(5rem, 12vh);
+}

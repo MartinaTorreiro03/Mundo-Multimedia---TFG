@@ -1,0 +1,59 @@
+<div class="barraInferior"
+     [class.hidden]="!visible() && !keyboardMenuOpen()"
+     [style.color]="uiState.accentColor('menus')"
+     (mouseenter)="onEnter()"
+     (mouseleave)="onLeave()"
+     appContrasteIconos
+     (surfaceChange)="onSurfaceChange($event)">
+
+  <div class="menu-wrap"
+       [class.visible]="isVisible() || keyboardMenuOpen()">
+    @if (voiceMenuSalirHint()) {
+      <span class="voz-pista voz-pista--menu-corner" aria-hidden="true">salir</span>
+    }
+    <ul>
+      <li (click)="onToggleVoiceNav()">
+        <span class="accs-speak" [appSpeakable]="'Navegación por voz'"></span>
+        @if (voiceHints()) {
+          <span class="voz-pista">voz</span>
+        }
+        <span>{{ voiceNav.enabled() ? 'Navegación por voz: ON' : 'Navegación por voz' }}</span>
+      </li>
+      <li (click)="onToggleKeyboardNav()">
+        <span class="accs-speak" [appSpeakable]="'Navegación por teclado'"></span>
+        @if (voiceHints()) {
+          <span class="voz-pista">teclado</span>
+        }
+        <span>{{ keyboardNav.enabled() ? 'Navegación por teclado: ON' : 'Navegación por teclado' }}</span>
+      </li>
+      <li (click)="visionReducida.toggle()">
+        <span class="accs-speak" [appSpeakable]="'Visión reducida'"></span>
+        @if (voiceHints()) {
+          <span class="voz-pista">visión</span>
+        }
+        <span>Visión reducida</span>
+      </li>
+      <li (click)="onToggleLectorPantalla()">
+        <span class="accs-speak" [appSpeakable]="'Lector de pantalla'"></span>
+        @if (voiceHints()) {
+          <span class="voz-pista">lector</span>
+        }
+        <span>{{ lector.lectorActivo() ? 'Lector de pantalla: ON' : 'Lector de pantalla' }}</span>
+      </li>
+      <li (click)="onCambiarExplicacion()">
+        <span class="accs-speak" [appSpeakable]="'Cambiar explicación'"></span>
+        @if (voiceHints()) {
+          <span class="voz-pista">explicación</span>
+        }
+        <span>Cambiar explicación</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="accs-icon-wrap">
+    @if (voiceIconHint()) {
+      <span class="voz-pista voz-pista--icono-side">accesibilidad</span>
+    }
+    <img [src]="iconoMenuAccs" alt="Icono de menú de accesibilidad">
+  </div>
+</div>

@@ -1,0 +1,68 @@
+<div class="galeria-grid" [appSpeakable]="textoIntro()">
+  @for (dispositivo of dispositivos; track dispositivo.id) {
+    <div class="item-dispositivo">
+      <img
+        role="button"
+        tabindex="0"
+        [src]="dispositivo.imagen"
+        [alt]="dispositivo.nombre"
+        (click)="abrirInfo(dispositivo)"
+        (keydown.enter)="abrirInfo(dispositivo)"
+        (keydown.space)="abrirInfo(dispositivo); $event.preventDefault()"
+      />
+      <span class="item-nombre" [appSpeakable]="dispositivo.nombre">{{ dispositivo.nombre }}</span>
+      @if (voiceNav.enabled()) {
+        <span class="voz-pista voz-pista--debajo-control" aria-hidden="true">{{ pistaDispositivo(dispositivo.id) }}</span>
+      }
+      <section class="item-play-wrap">
+        <button type="button" class="btn-escuchar btn-windows" (click)="toggleAudio(dispositivo, $event)">
+          {{ dispositivoSonando === dispositivo.id ? '⏸ Pausar' : '▶ Reproducir fragmento' }}
+        </button>
+        @if (voiceNav.enabled()) {
+          <span class="voz-pista voz-pista--debajo-control" aria-hidden="true">{{ pistaPlayGaleria(dispositivo.id) }}</span>
+        }
+      </section>
+      <span [appSpeakable]="'Botón. Reproducir fragmento de ' + dispositivo.nombre"></span>
+    </div>
+  }
+</div>
+
+@for (d of dispositivos; track d.id) {
+  <audio
+    [id]="'audio-' + d.id"
+    [src]="d.audio"
+    (ended)="onAudioEnded(d.id)"
+  ></audio>
+}
+
+@if (dispositivoSeleccionado; as sel) {
+  <div class="detalle-overlay" (click)="cerrarInfo()">
+    <div class="detalle-ventana" (click)="$event.stopPropagation()">
+
+      <div class="detalle-barra">
+        <span>{{ sel.nombre }}</span>
+        <div class="detalle-barra-acciones">
+          @if (voiceNav.enabled()) {
+            <span class="voz-pista voz-pista--detalle-cerrar" aria-hidden="true">cerrar</span>
+          }
+          <button type="button" class="btn-cerrar" (click)="cerrarInfo()">✖</button>
+        </div>
+      </div>
+
+      <div class="detalle-contenido">
+        <img [src]="sel.imagen" [alt]="sel.nombre" class="detalle-imagen" />
+        <p class="detalle-descripcion" appSpeakable>{{ textoDispositivo(sel.id) }}</p>
+        <div class="detalle-play-wrap">
+          <button type="button" class="btn-escuchar btn-win95" (click)="toggleAudioPopup()">
+            {{ popupSonando ? '⏸ Pausar' : '▶ Reproducir fragmento' }}
+          </button>
+          @if (voiceNav.enabled()) {
+            <span class="voz-pista voz-pista--debajo-control" aria-hidden="true">{{ pistaPlayDetalle() }}</span>
+          }
+        </div>
+        <span [appSpeakable]="'Botón. Reproducir fragmento de ' + sel.nombre"></span>
+      </div>
+
+    </div>
+  </div>
+}
