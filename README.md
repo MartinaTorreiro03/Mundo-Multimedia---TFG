@@ -1,5 +1,6 @@
 HEAD
-# MundoMultimedia
+# MundoMultimedia - TFG
+Página web de equipos multimedia con menú de accesibilidad incluido.
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.3.
 
@@ -58,7 +59,4 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
-
-# Mundo Multimedia - TFG
-Página web de equipos multimedia con menú de accesibilidad incluido.
 origin/main
